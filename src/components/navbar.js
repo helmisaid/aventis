@@ -19,7 +19,6 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { name: "Home", href: "/" },
   { name: "Products", href: "/products" },
   { name: "Articles", href: "/articles" },
   { name: "About", href: "/about" },

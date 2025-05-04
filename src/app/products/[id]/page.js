@@ -15,13 +15,13 @@ import {
   ShieldCheck,
   RefreshCw,
 } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
-import { Button } from "../../components/ui/button"
-import { Separator } from "../../components/ui/separator"
-import { Badge } from "../../components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
-import Navbar from "../../components/Navbar"
-import Footer from "../../components/Footer"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
+import { Button } from "../../../components/ui/button"
+import { Separator } from "../../../components/ui/separator"
+import { Badge } from "../../../components/ui/tabs"
+import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
+import Navbar from "../../../components/navbar"
+import Footer from "../../../components/footer"
 
 // Mock product data
 const product = {
