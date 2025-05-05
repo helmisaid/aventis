@@ -54,7 +54,7 @@ const featuredProducts = [
     name: "Aventis Hiking Backpack",
     description: "Lightweight and durable for all your adventures",
     price: 1250000,
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/products/hiking-backpack-product.jpg",
     rating: 5,
     reviews: 24,
     isNew: true,
@@ -64,7 +64,7 @@ const featuredProducts = [
     name: "Pro Trekking Poles",
     description: "Adjustable carbon fiber poles for stability",
     price: 850000,
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/products/tracking-pole-product.jpg",
     rating: 4,
     reviews: 18,
     isNew: false,
@@ -74,7 +74,7 @@ const featuredProducts = [
     name: "Waterproof Tent 2-Person",
     description: "Easy setup and weather resistant design",
     price: 2100000,
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/products/2p-tent-product.jpg",
     rating: 5,
     reviews: 32,
     isNew: true,
@@ -84,7 +84,7 @@ const featuredProducts = [
     name: "Insulated Water Bottle",
     description: "Keeps drinks hot or cold for 24 hours",
     price: 350000,
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/products/insulated-water-bottle-product.jpg",
     rating: 4,
     reviews: 41,
     isNew: false,
@@ -413,13 +413,13 @@ export default function Home() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 bg-primary text-white">
+        <section className="py-16 bg-primary text-slate-900">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">Ready For Your Next Adventure?</h2>
             <p className="text-lg mb-8 max-w-2xl mx-auto">
               Join thousands of outdoor enthusiasts who trust Aventis for their gear needs.
             </p>
-            <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-gray-100">
+            <Button size="lg" variant="secondary" className="bg-white border border-gray-400 text-primary hover:text-white hover:bg-black">
               Shop Now <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>

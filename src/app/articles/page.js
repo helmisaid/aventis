@@ -16,7 +16,6 @@ import ArticleCard from "../../components/articles/article-card";
 import ArticleCardSkeleton from "../../components/articles/article-card-skeleton";
 import Pagination from "../../components/Pagination";
 
-// Mock categories for the filter
 const categories = [
   "All",
   "Hiking",
@@ -27,7 +26,6 @@ const categories = [
   "Gear Reviews",
 ];
 
-// Mock featured article
 const featuredArticle = {
   id: "1",
   title: "Essential Gear for Your First Hiking Adventure",
