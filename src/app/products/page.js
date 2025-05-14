@@ -1,139 +1,84 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import {
-  Filter,
-  Grid3x3,
-  List,
-  Search,
-  ShoppingCart,
-  Star,
-  X,
-} from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../../components/ui/sheet";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select";
-import { Slider } from "../../components/ui/slider";
-import { Checkbox } from "../../components/ui/checkbox";
-import { Separator } from "../../components/ui/separator";
-import { Badge } from "../../components/ui/badge";
-import Navbar from "../../components/navbar";
-import Footer from "../../components/footer";
-import Pagination from "../../components/Pagination";
-
-// Mock categories
-const categories = [
-  { name: "Hiking", count: 42 },
-  { name: "Camping", count: 38 },
-  { name: "Climbing", count: 24 },
-  { name: "Clothing", count: 56 },
-  { name: "Footwear", count: 31 },
-  { name: "Accessories", count: 45 },
-];
-
-// Mock brands
-const brands = [
-  { name: "Aventis", count: 28 },
-  { name: "Mountain Pro", count: 24 },
-  { name: "OutdoorElite", count: 19 },
-  { name: "TrailMaster", count: 16 },
-  { name: "WildernessGear", count: 14 },
-  { name: "SummitClimb", count: 12 },
-];
-
-// Mock products
-const products = Array.from({ length: 12 }, (_, i) => ({
-  id: `${i + 1}`,
-  name: [
-    "Aventis Hiking Backpack 45L",
-    "TrailMaster Trekking Poles",
-    "OutdoorElite Camping Tent 2-Person",
-    "WildernessGear Sleeping Bag",
-    "Mountain Pro Climbing Harness",
-    "Aventis Waterproof Jacket",
-    "TrailMaster Hiking Boots",
-    "SummitClimb Carabiners Set",
-    "OutdoorElite Camping Stove",
-    "WildernessGear Headlamp",
-    "Mountain Pro Trekking Pants",
-    "Aventis Insulated Water Bottle",
-  ][i % 12],
-  price: Math.floor(Math.random() * 2000000) + 200000,
-  originalPrice: Math.floor(Math.random() * 3000000) + 500000,
-  discount: Math.floor(Math.random() * 40) + 10,
-  rating: (Math.floor(Math.random() * 15) + 35) / 10,
-  reviewCount: Math.floor(Math.random() * 100) + 10,
-  image: `/placeholder.svg?height=400&width=400&text=Product+${i + 1}`,
-  isNew: i % 5 === 0,
-  isBestSeller: i % 7 === 0,
-  category: categories[Math.floor(Math.random() * categories.length)].name,
-  brand: brands[Math.floor(Math.random() * brands.length)].name,
-}));
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { Filter, Grid3x3, List, Search, ShoppingCart, Star, X } from "lucide-react"
+import { Button } from "../../components/ui/button"
+import { Input } from "../../components/ui/input"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../../components/ui/sheet"
+import { Checkbox } from "../../components/ui/checkbox"
+import { Separator } from "../../components/ui/separator"
+import Navbar from "../../components/navbar"
+import Footer from "../../components/footer"
+import Pagination from "../../components/Pagination"
+import ProductGridCard from "../../components/ui/product-grid-card"
+import PriceRangeSlider from "../../components/ui/price-range-slider"
+import ActiveFilters from "../../components/ui/active-filters"
+import { allProducts, categories, brands, formatPrice } from "../../data/products"
 
 export default function ProductsPage() {
-  const [viewMode, setViewMode] = useState("grid");
-  const [priceRange, setPriceRange] = useState([200000, 3000000]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [viewMode, setViewMode] = useState("grid")
+  const [priceRange, setPriceRange] = useState([200000, 3000000])
+  const [selectedCategories, setSelectedCategories] = useState([])
+  const [selectedBrands, setSelectedBrands] = useState([])
+  const [filtersVisible, setFiltersVisible] = useState(false)
+  const [sortBy, setSortBy] = useState("featured")
 
   const toggleCategory = (category) => {
     setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
-    );
-  };
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category],
+    )
+  }
 
   const toggleBrand = (brand) => {
-    setSelectedBrands((prev) =>
-      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
-    );
-  };
+    setSelectedBrands((prev) => (prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]))
+  }
 
   const clearFilters = () => {
-    setSelectedCategories([]);
-    setSelectedBrands([]);
-    setPriceRange([200000, 3000000]);
-  };
+    setSelectedCategories([])
+    setSelectedBrands([])
+    setPriceRange([200000, 3000000])
+  }
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const handlePriceRangeChange = (newRange) => {
+    setPriceRange(newRange)
+  }
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value)
+  }
+
+  // Sort products based on selected option
+  const getSortedProducts = () => {
+    const sortedProducts = [...allProducts]
+
+    switch (sortBy) {
+      case "newest":
+        return sortedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      case "price-low":
+        return sortedProducts.sort((a, b) => a.price - b.price)
+      case "price-high":
+        return sortedProducts.sort((a, b) => b.price - a.price)
+      case "rating":
+        return sortedProducts.sort((a, b) => b.rating - a.rating)
+      default:
+        return sortedProducts // featured or default
+    }
+  }
+
+  const sortedProducts = getSortedProducts()
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gray-50 dark:bg-gray-900 py-12">
+        <section className="bg-gray-50 py-8 md:py-12">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                Our Products
-              </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-gray-900">Our Products</h1>
+              <p className="text-base md:text-lg text-gray-700 mb-6 md:mb-8">
                 Discover premium outdoor gear for your next adventure
               </p>
               <div className="relative max-w-xl mx-auto">
@@ -141,7 +86,7 @@ export default function ProductsPage() {
                 <Input
                   type="search"
                   placeholder="Search products..."
-                  className="pl-10 pr-4 py-2 w-full rounded-full"
+                  className="pl-10 pr-4 py-2 w-full rounded-full border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
                 />
               </div>
             </div>
@@ -149,17 +94,17 @@ export default function ProductsPage() {
         </section>
 
         {/* Products Section */}
-        <section className="py-12">
+        <section className="py-8 md:py-12">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
               {/* Filters - Desktop */}
               <div
-                className={`lg:w-1/4 space-y-6 ${
+                className={`lg:w-1/4 space-y-5 ${
                   filtersVisible ? "block" : "hidden"
-                } lg:block bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm h-fit sticky top-20`}
+                } lg:block bg-white p-5 rounded-xl shadow-sm h-fit sticky top-20 border border-gray-100`}
               >
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold">Filters</h2>
+                  <h2 className="text-lg font-bold text-gray-900">Filters</h2>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -179,52 +124,40 @@ export default function ProductsPage() {
                 </div>
 
                 {/* Price Range */}
-                <div>
-                  <h3 className="font-semibold mb-4">Price Range</h3>
-                  <div className="space-y-4">
-                    <Slider
-                      defaultValue={[200000, 3000000]}
-                      min={0}
-                      max={5000000}
-                      step={100000}
-                      value={priceRange}
-                      onValueChange={setPriceRange}
-                      className="my-6"
-                    />
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">
-                        {formatPrice(priceRange[0])}
-                      </span>
-                      <span className="text-sm">
-                        {formatPrice(priceRange[1])}
-                      </span>
-                    </div>
-                  </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold mb-4 text-gray-800">Price Range</h3>
+                  <PriceRangeSlider
+                    min={0}
+                    max={5000000}
+                    step={100000}
+                    initialMin={priceRange[0]}
+                    initialMax={priceRange[1]}
+                    formatPrice={formatPrice}
+                    onChange={handlePriceRangeChange}
+                  />
                 </div>
 
-                <Separator />
+                <Separator className="bg-gray-100" />
 
                 {/* Categories */}
                 <div>
-                  <h3 className="font-semibold mb-4">Categories</h3>
-                  <div className="space-y-2">
+                  <h3 className="font-semibold mb-3 text-gray-800">Categories</h3>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
                     {categories.map((category) => (
-                      <div
-                        key={category.name}
-                        className="flex items-center space-x-2"
-                      >
+                      <div key={category.name} className="flex items-center space-x-2 group">
                         <Checkbox
                           id={`category-${category.name}`}
                           checked={selectedCategories.includes(category.name)}
                           onCheckedChange={() => toggleCategory(category.name)}
+                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                         />
                         <label
                           htmlFor={`category-${category.name}`}
-                          className="text-sm flex items-center justify-between w-full cursor-pointer"
+                          className="text-sm flex items-center justify-between w-full cursor-pointer group-hover:text-primary transition-colors"
                         >
                           <span>{category.name}</span>
-                          <span className="text-gray-500 dark:text-gray-400 text-xs">
-                            ({category.count})
+                          <span className="text-gray-500 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                            {category.count}
                           </span>
                         </label>
                       </div>
@@ -232,29 +165,27 @@ export default function ProductsPage() {
                   </div>
                 </div>
 
-                <Separator />
+                <Separator className="bg-gray-100" />
 
                 {/* Brands */}
                 <div>
-                  <h3 className="font-semibold mb-4">Brands</h3>
-                  <div className="space-y-2">
+                  <h3 className="font-semibold mb-3 text-gray-800">Brands</h3>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
                     {brands.map((brand) => (
-                      <div
-                        key={brand.name}
-                        className="flex items-center space-x-2"
-                      >
+                      <div key={brand.name} className="flex items-center space-x-2 group">
                         <Checkbox
                           id={`brand-${brand.name}`}
                           checked={selectedBrands.includes(brand.name)}
                           onCheckedChange={() => toggleBrand(brand.name)}
+                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                         />
                         <label
                           htmlFor={`brand-${brand.name}`}
-                          className="text-sm flex items-center justify-between w-full cursor-pointer"
+                          className="text-sm flex items-center justify-between w-full cursor-pointer group-hover:text-primary transition-colors"
                         >
                           <span>{brand.name}</span>
-                          <span className="text-gray-500 dark:text-gray-400 text-xs">
-                            ({brand.count})
+                          <span className="text-gray-500 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                            {brand.count}
                           </span>
                         </label>
                       </div>
@@ -262,33 +193,32 @@ export default function ProductsPage() {
                   </div>
                 </div>
 
-                <Separator />
+                <Separator className="bg-gray-100" />
 
                 {/* Ratings */}
                 <div>
-                  <h3 className="font-semibold mb-4">Ratings</h3>
-                  <div className="space-y-2">
+                  <h3 className="font-semibold mb-3 text-gray-800">Ratings</h3>
+                  <div className="space-y-3">
                     {[5, 4, 3, 2, 1].map((rating) => (
-                      <div key={rating} className="flex items-center space-x-2">
-                        <Checkbox id={`rating-${rating}`} />
+                      <div key={rating} className="flex items-center space-x-2 group">
+                        <Checkbox
+                          id={`rating-${rating}`}
+                          className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        />
                         <label
                           htmlFor={`rating-${rating}`}
-                          className="text-sm flex items-center justify-between w-full cursor-pointer"
+                          className="text-sm flex items-center justify-between w-full cursor-pointer group-hover:text-primary transition-colors"
                         >
                           <div className="flex items-center">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star
                                 key={i}
                                 className={`h-4 w-4 ${
-                                  i < rating
-                                    ? "text-yellow-400 fill-yellow-400"
-                                    : "text-gray-300"
+                                  i < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
                                 }`}
                               />
                             ))}
-                            <span className="ml-1">
-                              {rating === 5 ? "& up" : ""}
-                            </span>
+                            <span className="ml-1 text-gray-700">{rating === 5 ? "& up" : ""}</span>
                           </div>
                         </label>
                       </div>
@@ -296,62 +226,43 @@ export default function ProductsPage() {
                   </div>
                 </div>
 
-                <Separator />
+                <Separator className="bg-gray-100" />
 
                 {/* Apply Filters Button (Mobile) */}
-                <Button className="w-full lg:hidden">Apply Filters</Button>
+                <Button className="w-full lg:hidden bg-primary hover:bg-primary/90">Apply Filters</Button>
               </div>
 
               {/* Products */}
               <div className="lg:w-3/4">
                 {/* Toolbar */}
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm mb-6 flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex items-center space-x-2">
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                  <div className="flex items-center gap-2">
                     {/* Mobile Filter Button */}
                     <Sheet>
                       <SheetTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="lg:hidden"
-                        >
+                        <Button variant="outline" size="sm" className="lg:hidden flex items-center">
                           <Filter className="h-4 w-4 mr-2" />
                           Filters
                         </Button>
                       </SheetTrigger>
-                      <SheetContent
-                        side="left"
-                        className="w-[300px] sm:w-[400px] overflow-y-auto"
-                      >
+                      <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
                         <SheetHeader>
                           <SheetTitle>Filters</SheetTitle>
-                          <SheetDescription>
-                            Refine your product search
-                          </SheetDescription>
+                          <SheetDescription>Refine your product search</SheetDescription>
                         </SheetHeader>
                         <div className="py-4 space-y-6">
                           {/* Price Range */}
                           <div>
                             <h3 className="font-semibold mb-4">Price Range</h3>
-                            <div className="space-y-4">
-                              <Slider
-                                defaultValue={[200000, 3000000]}
-                                min={0}
-                                max={5000000}
-                                step={100000}
-                                value={priceRange}
-                                onValueChange={setPriceRange}
-                                className="my-6"
-                              />
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm">
-                                  {formatPrice(priceRange[0])}
-                                </span>
-                                <span className="text-sm">
-                                  {formatPrice(priceRange[1])}
-                                </span>
-                              </div>
-                            </div>
+                            <PriceRangeSlider
+                              min={0}
+                              max={5000000}
+                              step={100000}
+                              initialMin={priceRange[0]}
+                              initialMax={priceRange[1]}
+                              formatPrice={formatPrice}
+                              onChange={handlePriceRangeChange}
+                            />
                           </div>
 
                           <Separator />
@@ -359,28 +270,21 @@ export default function ProductsPage() {
                           {/* Categories */}
                           <div>
                             <h3 className="font-semibold mb-4">Categories</h3>
-                            <div className="space-y-2">
+                            <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
                               {categories.map((category) => (
-                                <div
-                                  key={category.name}
-                                  className="flex items-center space-x-2"
-                                >
+                                <div key={category.name} className="flex items-center space-x-2">
                                   <Checkbox
                                     id={`mobile-category-${category.name}`}
-                                    checked={selectedCategories.includes(
-                                      category.name
-                                    )}
-                                    onCheckedChange={() =>
-                                      toggleCategory(category.name)
-                                    }
+                                    checked={selectedCategories.includes(category.name)}
+                                    onCheckedChange={() => toggleCategory(category.name)}
                                   />
                                   <label
                                     htmlFor={`mobile-category-${category.name}`}
                                     className="text-sm flex items-center justify-between w-full cursor-pointer"
                                   >
                                     <span>{category.name}</span>
-                                    <span className="text-gray-500 dark:text-gray-400 text-xs">
-                                      ({category.count})
+                                    <span className="text-gray-500 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                                      {category.count}
                                     </span>
                                   </label>
                                 </div>
@@ -393,28 +297,21 @@ export default function ProductsPage() {
                           {/* Brands */}
                           <div>
                             <h3 className="font-semibold mb-4">Brands</h3>
-                            <div className="space-y-2">
+                            <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
                               {brands.map((brand) => (
-                                <div
-                                  key={brand.name}
-                                  className="flex items-center space-x-2"
-                                >
+                                <div key={brand.name} className="flex items-center space-x-2">
                                   <Checkbox
                                     id={`mobile-brand-${brand.name}`}
-                                    checked={selectedBrands.includes(
-                                      brand.name
-                                    )}
-                                    onCheckedChange={() =>
-                                      toggleBrand(brand.name)
-                                    }
+                                    checked={selectedBrands.includes(brand.name)}
+                                    onCheckedChange={() => toggleBrand(brand.name)}
                                   />
                                   <label
                                     htmlFor={`mobile-brand-${brand.name}`}
                                     className="text-sm flex items-center justify-between w-full cursor-pointer"
                                   >
                                     <span>{brand.name}</span>
-                                    <span className="text-gray-500 dark:text-gray-400 text-xs">
-                                      ({brand.count})
+                                    <span className="text-gray-500 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                                      {brand.count}
                                     </span>
                                   </label>
                                 </div>
@@ -429,10 +326,7 @@ export default function ProductsPage() {
                             <h3 className="font-semibold mb-4">Ratings</h3>
                             <div className="space-y-2">
                               {[5, 4, 3, 2, 1].map((rating) => (
-                                <div
-                                  key={rating}
-                                  className="flex items-center space-x-2"
-                                >
+                                <div key={rating} className="flex items-center space-x-2">
                                   <Checkbox id={`mobile-rating-${rating}`} />
                                   <label
                                     htmlFor={`mobile-rating-${rating}`}
@@ -443,15 +337,11 @@ export default function ProductsPage() {
                                         <Star
                                           key={i}
                                           className={`h-4 w-4 ${
-                                            i < rating
-                                              ? "text-yellow-400 fill-yellow-400"
-                                              : "text-gray-300"
+                                            i < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
                                           }`}
                                         />
                                       ))}
-                                      <span className="ml-1">
-                                        {rating === 5 ? "& up" : ""}
-                                      </span>
+                                      <span className="ml-1">{rating === 5 ? "& up" : ""}</span>
                                     </div>
                                   </label>
                                 </div>
@@ -469,74 +359,46 @@ export default function ProductsPage() {
                     </Sheet>
 
                     {/* Active Filters */}
-                    <div className="flex flex-wrap gap-2">
-                      {selectedCategories.map((category) => (
-                        <Badge
-                          key={`cat-${category}`}
-                          variant="secondary"
-                          className="flex items-center gap-1"
-                        >
-                          {category}
-                          <X
-                            className="h-3 w-3 cursor-pointer"
-                            onClick={() => toggleCategory(category)}
-                          />
-                        </Badge>
-                      ))}
-                      {selectedBrands.map((brand) => (
-                        <Badge
-                          key={`brand-${brand}`}
-                          variant="secondary"
-                          className="flex items-center gap-1"
-                        >
-                          {brand}
-                          <X
-                            className="h-3 w-3 cursor-pointer"
-                            onClick={() => toggleBrand(brand)}
-                          />
-                        </Badge>
-                      ))}
-                      {(selectedCategories.length > 0 ||
-                        selectedBrands.length > 0) && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={clearFilters}
-                          className="h-6 text-xs text-primary hover:text-primary/80"
-                        >
-                          Clear All
-                        </Button>
-                      )}
-                    </div>
+                    <ActiveFilters
+                      selectedCategories={selectedCategories}
+                      selectedBrands={selectedBrands}
+                      toggleCategory={toggleCategory}
+                      toggleBrand={toggleBrand}
+                      clearFilters={clearFilters}
+                    />
                   </div>
 
-                  <div className="flex items-center space-x-2 ml-auto">
-                    {/* Sort */}
-                    <Select defaultValue="featured">
-                      <SelectTrigger className="w-[180px] h-9">
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="featured">Featured</SelectItem>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="price-low">
-                          Price: Low to High
-                        </SelectItem>
-                        <SelectItem value="price-high">
-                          Price: High to Low
-                        </SelectItem>
-                        <SelectItem value="rating">Highest Rated</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="flex items-center gap-3">
+                    {/* Sort - Using native select for more native appearance */}
+                    <div className="relative">
+                      <select
+                        value={sortBy}
+                        onChange={handleSortChange}
+                        className="appearance-none bg-white border border-gray-200 rounded-md pl-4 pr-10 py-2 h-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary cursor-pointer min-w-[180px]"
+                      >
+                        <option value="featured">Featured</option>
+                        <option value="newest">Newest</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Highest Rated</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                        <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    </div>
 
                     {/* View Mode */}
                     <div className="flex border rounded-md overflow-hidden">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className={`h-9 w-9 rounded-none ${
-                          viewMode === "grid" ? "bg-primary text-white" : ""
-                        }`}
+                        className={`h-10 w-10 rounded-none ${viewMode === "grid" ? "bg-primary text-white" : ""}`}
                         onClick={() => setViewMode("grid")}
                       >
                         <Grid3x3 className="h-4 w-4" />
@@ -544,9 +406,7 @@ export default function ProductsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className={`h-9 w-9 rounded-none ${
-                          viewMode === "list" ? "bg-primary text-white" : ""
-                        }`}
+                        className={`h-10 w-10 rounded-none ${viewMode === "list" ? "bg-primary text-white" : ""}`}
                         onClick={() => setViewMode("list")}
                       >
                         <List className="h-4 w-4" />
@@ -555,117 +415,46 @@ export default function ProductsPage() {
                   </div>
                 </div>
 
+                {/* Product Count */}
+                <div className="mb-4 text-sm text-gray-600">
+                  Showing <span className="font-medium">{sortedProducts.length}</span> products
+                </div>
+
                 {/* Product Grid/List */}
                 {viewMode === "grid" ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {products.map((product) => (
-                      <Link
-                        key={product.id}
-                        href={`/products/${product.id}`}
-                        className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
-                      >
-                        <div className="relative h-64 overflow-hidden">
-                          <Image
-                            src={product.image || "/placeholder.svg"}
-                            alt={product.name}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                          {product.discount > 0 && (
-                            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                              -{product.discount}%
-                            </div>
-                          )}
-                          {product.isNew && (
-                            <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
-                              New
-                            </div>
-                          )}
-                          {product.isBestSeller && (
-                            <div className="absolute top-2 right-2 bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded">
-                              Best Seller
-                            </div>
-                          )}
-                          <Button
-                            size="icon"
-                            className="absolute bottom-2 right-2 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <ShoppingCart className="h-4 w-4" />
-                          </Button>
-                        </div>
-                        <div className="p-4 flex flex-col flex-grow">
-                          <div className="flex items-center mb-2">
-                            <div className="flex text-yellow-400">
-                              {Array.from({ length: 5 }).map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < Math.floor(product.rating)
-                                      ? "fill-current"
-                                      : i < product.rating
-                                      ? "fill-current opacity-50"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                              ({product.reviewCount})
-                            </span>
-                          </div>
-                          <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                            {product.name}
-                          </h3>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                            {product.brand}
-                          </p>
-                          <div className="mt-auto">
-                            {product.discount > 0 ? (
-                              <div className="flex items-center">
-                                <span className="font-bold">
-                                  {formatPrice(product.price)}
-                                </span>
-                                <span className="text-sm text-gray-500 dark:text-gray-400 line-through ml-2">
-                                  {formatPrice(product.originalPrice)}
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="font-bold">
-                                {formatPrice(product.price)}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </Link>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {sortedProducts.map((product) => (
+                      <ProductGridCard key={product.id} product={product} formatPrice={formatPrice} />
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {products.map((product) => (
+                    {sortedProducts.map((product) => (
                       <Link
                         key={product.id}
                         href={`/products/${product.id}`}
-                        className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col sm:flex-row h-full"
+                        className="group bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 flex flex-col sm:flex-row h-full"
                       >
-                        <div className="relative h-64 sm:h-auto sm:w-48 md:w-64 overflow-hidden">
+                        <div className="relative h-48 sm:h-auto sm:w-48 md:w-56 overflow-hidden">
                           <Image
                             src={product.image || "/placeholder.svg"}
                             alt={product.name}
                             fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="object-cover"
+                            sizes="(max-width: 640px) 100vw, 200px"
                           />
                           {product.discount > 0 && (
-                            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                               -{product.discount}%
                             </div>
                           )}
                           {product.isNew && (
-                            <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                               New
                             </div>
                           )}
                           {product.isBestSeller && (
-                            <div className="absolute top-2 right-2 bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            <div className="absolute top-2 right-2 bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                               Best Seller
                             </div>
                           )}
@@ -680,54 +469,40 @@ export default function ProductsPage() {
                                     i < Math.floor(product.rating)
                                       ? "fill-current"
                                       : i < product.rating
-                                      ? "fill-current opacity-50"
-                                      : "text-gray-300"
+                                        ? "fill-current opacity-50"
+                                        : "text-gray-300"
                                   }`}
                                 />
                               ))}
                             </div>
-                            <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                              ({product.reviewCount})
-                            </span>
+                            <span className="text-xs text-gray-500 ml-2">({product.reviewCount})</span>
                           </div>
-                          <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                          <h3 className="font-medium text-base mb-1 group-hover:text-primary transition-colors">
                             {product.name}
                           </h3>
                           <div className="flex items-center mb-2">
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              {product.brand}
-                            </span>
+                            <span className="text-sm text-gray-500">{product.brand}</span>
                             <span className="mx-2 text-gray-300">•</span>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              {product.category}
-                            </span>
+                            <span className="text-sm text-gray-500">{product.category}</span>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua.
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2 md:line-clamp-none">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua.
                           </p>
                           <div className="mt-auto flex items-center justify-between">
                             <div>
                               {product.discount > 0 ? (
                                 <div className="flex items-center">
-                                  <span className="font-bold">
-                                    {formatPrice(product.price)}
-                                  </span>
-                                  <span className="text-sm text-gray-500 dark:text-gray-400 line-through ml-2">
+                                  <span className="font-bold">{formatPrice(product.price)}</span>
+                                  <span className="text-sm text-gray-500 line-through ml-2">
                                     {formatPrice(product.originalPrice)}
                                   </span>
                                 </div>
                               ) : (
-                                <span className="font-bold">
-                                  {formatPrice(product.price)}
-                                </span>
+                                <span className="font-bold">{formatPrice(product.price)}</span>
                               )}
                             </div>
-                            <Button
-                              size="sm"
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
+                            <Button size="sm" className="bg-primary hover:bg-primary/90 text-white">
                               <ShoppingCart className="h-4 w-4 mr-2" />
                               Add to Cart
                             </Button>
@@ -739,7 +514,9 @@ export default function ProductsPage() {
                 )}
 
                 {/* Pagination */}
-                <Pagination totalPages={5} currentPage={1} />
+                <div className="mt-8">
+                  <Pagination totalPages={5} currentPage={1} />
+                </div>
               </div>
             </div>
           </div>
@@ -747,5 +524,5 @@ export default function ProductsPage() {
       </main>
       <Footer />
     </div>
-  );
+  )
 }

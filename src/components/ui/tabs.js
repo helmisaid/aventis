@@ -3,6 +3,8 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+const TabsContext = React.createContext(null)
+
 const Tabs = ({ defaultValue, value, onValueChange, className, children, ...props }) => {
   const [selectedValue, setSelectedValue] = React.useState(value || defaultValue)
 
@@ -20,21 +22,15 @@ const Tabs = ({ defaultValue, value, onValueChange, className, children, ...prop
   }
 
   return (
-    <div className={cn("", className)} {...props}>
-      {React.Children.map(children, (child) => {
-        if (child.type === TabsList || child.type === TabsContent) {
-          return React.cloneElement(child, {
-            selectedValue,
-            onValueChange: handleValueChange,
-          })
-        }
-        return child
-      })}
-    </div>
+    <TabsContext.Provider value={{ selectedValue, onValueChange: handleValueChange }}>
+      <div className={cn("", className)} {...props}>
+        {children}
+      </div>
+    </TabsContext.Provider>
   )
 }
 
-const TabsList = ({ className, children, selectedValue, onValueChange, ...props }) => {
+const TabsList = ({ className, children, ...props }) => {
   return (
     <div
       className={cn(
@@ -43,20 +39,15 @@ const TabsList = ({ className, children, selectedValue, onValueChange, ...props 
       )}
       {...props}
     >
-      {React.Children.map(children, (child) => {
-        if (child.type === TabsTrigger) {
-          return React.cloneElement(child, {
-            isSelected: selectedValue === child.props.value,
-            onSelect: () => onValueChange(child.props.value),
-          })
-        }
-        return child
-      })}
+      {children}
     </div>
   )
 }
 
-const TabsTrigger = ({ className, value, children, isSelected, onSelect, ...props }) => {
+const TabsTrigger = ({ className, value, children, ...props }) => {
+  const { selectedValue, onValueChange } = React.useContext(TabsContext)
+  const isSelected = selectedValue === value
+
   return (
     <button
       className={cn(
@@ -64,7 +55,7 @@ const TabsTrigger = ({ className, value, children, isSelected, onSelect, ...prop
         isSelected ? "bg-background text-foreground shadow-sm" : "hover:bg-background/50 hover:text-foreground",
         className,
       )}
-      onClick={onSelect}
+      onClick={() => onValueChange(value)}
       {...props}
     >
       {children}
@@ -72,7 +63,9 @@ const TabsTrigger = ({ className, value, children, isSelected, onSelect, ...prop
   )
 }
 
-const TabsContent = ({ className, value, children, selectedValue, ...props }) => {
+const TabsContent = ({ className, value, children, ...props }) => {
+  const { selectedValue } = React.useContext(TabsContext)
+
   if (value !== selectedValue) return null
 
   return (

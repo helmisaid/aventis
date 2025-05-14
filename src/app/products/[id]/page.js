@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { use } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -15,139 +16,44 @@ import {
   ShieldCheck,
   RefreshCw,
 } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
-import { Button } from "../../../components/ui/button"
-import { Separator } from "../../../components/ui/separator"
-import { Badge } from "../../../components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar"
-import Navbar from "../../../components/navbar"
-import Footer from "../../../components/footer"
-
-// Mock product data
-const product = {
-  id: "1",
-  name: "Aventis Hiking Backpack 45L",
-  description:
-    "The Aventis Hiking Backpack 45L is designed for serious hikers and backpackers. With its durable construction, comfortable carrying system, and thoughtful organization, this pack is ready for your next adventure.",
-  price: 1250000,
-  originalPrice: 1500000,
-  discount: 17,
-  rating: 4.8,
-  reviewCount: 124,
-  stock: 15,
-  sku: "AVT-BP-45L-BLU",
-  brand: "Aventis",
-  category: "Hiking",
-  tags: ["Backpack", "Hiking", "Outdoor", "45L"],
-  features: [
-    "45L capacity ideal for multi-day hikes",
-    "Durable water-resistant nylon construction",
-    "Adjustable suspension system for custom fit",
-    "Multiple access points to main compartment",
-    "Integrated rain cover",
-    "Hydration reservoir compatible",
-    "Multiple external attachment points",
-    "Padded hip belt with zippered pockets",
-  ],
-  specifications: {
-    Volume: "45 Liters",
-    Weight: "1.8 kg",
-    Dimensions: "68 x 35 x 25 cm",
-    Material: "Ripstop Nylon",
-    "Frame Type": "Internal Aluminum Frame",
-    Warranty: "Lifetime Warranty",
-    "Water Resistant": "Yes",
-    "Number of Pockets": "8",
-    "Color Options": "Blue, Black, Green",
-  },
-  colors: [
-    { name: "Blue", value: "#1e40af" },
-    { name: "Black", value: "#171717" },
-    { name: "Green", value: "#166534" },
-  ],
-  images: [
-    "/placeholder.svg?height=600&width=600&text=Backpack+Main",
-    "/placeholder.svg?height=600&width=600&text=Backpack+Side",
-    "/placeholder.svg?height=600&width=600&text=Backpack+Front",
-    "/placeholder.svg?height=600&width=600&text=Backpack+Back",
-  ],
-  reviews: [
-    {
-      id: "1",
-      user: {
-        name: "John Doe",
-        avatar: "/placeholder.svg?height=100&width=100&text=JD",
-      },
-      rating: 5,
-      date: "May 15, 2023",
-      title: "Perfect for my trekking needs",
-      content:
-        "I've used this backpack on several multi-day hikes and it's been fantastic. Comfortable to wear even when fully loaded, and the organization is well thought out.",
-    },
-    {
-      id: "2",
-      user: {
-        name: "Sarah Smith",
-        avatar: "/placeholder.svg?height=100&width=100&text=SS",
-      },
-      rating: 4,
-      date: "April 28, 2023",
-      title: "Great quality but slightly heavy",
-      content:
-        "The quality of this backpack is excellent and it has plenty of space. My only complaint is that it's a bit heavier than I expected. Still, the comfort makes up for the extra weight.",
-    },
-    {
-      id: "3",
-      user: {
-        name: "Mike Johnson",
-        avatar: "/placeholder.svg?height=100&width=100&text=MJ",
-      },
-      rating: 5,
-      date: "March 12, 2023",
-      title: "Survived a downpour!",
-      content:
-        "Got caught in heavy rain during my hike in Sumatra. The integrated rain cover was easy to deploy and kept all my gear dry. The water-resistant exterior also helped. Highly recommend!",
-    },
-  ],
-  relatedProducts: [
-    {
-      id: "2",
-      name: "TrailMaster Trekking Poles",
-      price: 450000,
-      image: "/placeholder.svg?height=300&width=300&text=Trekking+Poles",
-      rating: 4.6,
-    },
-    {
-      id: "3",
-      name: "Aventis Waterproof Jacket",
-      price: 890000,
-      image: "/placeholder.svg?height=300&width=300&text=Jacket",
-      rating: 4.7,
-    },
-    {
-      id: "4",
-      name: "WildernessGear Sleeping Bag",
-      price: 750000,
-      image: "/placeholder.svg?height=300&width=300&text=Sleeping+Bag",
-      rating: 4.5,
-    },
-    {
-      id: "5",
-      name: "OutdoorElite Camping Tent 2-Person",
-      price: 1200000,
-      image: "/placeholder.svg?height=300&width=300&text=Tent",
-      rating: 4.8,
-    },
-  ],
-}
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Navbar from "@/components/navbar"
+import Footer from "@/components/footer"
+import { getProductById, getRelatedProducts, formatPrice } from "@/data/products"
 
 export default function ProductDetailPage({ params }) {
-  const [mainImage, setMainImage] = useState(product.images[0])
-  const [selectedColor, setSelectedColor] = useState(product.colors[0])
+  // Unwrap params using React.use()
+  const unwrappedParams = use(params)
+  const productId = unwrappedParams.id
+
+  const [product, setProduct] = useState(null)
+  const [relatedProducts, setRelatedProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [mainImage, setMainImage] = useState("")
+  const [selectedColor, setSelectedColor] = useState(null)
   const [quantity, setQuantity] = useState(1)
 
+  useEffect(() => {
+    // Fetch product data based on the ID
+    const productData = getProductById(productId)
+    if (productData) {
+      setProduct(productData)
+      setMainImage(productData.images[0])
+      setSelectedColor(productData.colors[0])
+
+      // Get related products
+      const related = getRelatedProducts(productId)
+      setRelatedProducts(related)
+    }
+    setLoading(false)
+  }, [productId])
+
   const incrementQuantity = () => {
-    if (quantity < product.stock) {
+    if (product && quantity < product.stock) {
       setQuantity(quantity + 1)
     }
   }
@@ -158,23 +64,47 @@ export default function ProductDetailPage({ params }) {
     }
   }
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price)
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
+
+  // Show error if product not found
+  if (!product) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-1 my-44 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-4">Product Not Found</h1>
+            <p className="mb-6">The product you&apos;re looking for doesn&apos;t exist or has been removed.</p>
+            <Link href="/products">
+              <Button>Browse All Products</Button>
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
   }
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
+        {/* Rest of your component remains the same */}
         {/* Breadcrumbs */}
-        <div className="bg-gray-50 dark:bg-gray-900 py-3">
+        <div className="py-3">
           <div className="container mx-auto px-4">
-            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center text-sm text-slate-600 ">
               <Link href="/" className="hover:text-primary">
                 Home
               </Link>
@@ -187,7 +117,7 @@ export default function ProductDetailPage({ params }) {
                 {product.category}
               </Link>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <span className="text-gray-700 dark:text-gray-300">{product.name}</span>
+              <span className="text-gray-700 ">{product.name}</span>
             </div>
           </div>
         </div>
@@ -198,7 +128,7 @@ export default function ProductDetailPage({ params }) {
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Product Images */}
               <div className="lg:w-1/2 space-y-4">
-                <div className="relative h-96 md:h-[500px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                <div className="relative h-96 md:h-[500px] rounded-lg overflow-hidden border border-gray-200 ">
                   <Image
                     src={mainImage || "/placeholder.svg"}
                     alt={product.name}
@@ -219,7 +149,7 @@ export default function ProductDetailPage({ params }) {
                       className={`relative h-24 w-24 rounded-md overflow-hidden border-2 ${
                         mainImage === image
                           ? "border-primary"
-                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                          : "border-gray-200 hover:border-gray-300 "
                       }`}
                       onClick={() => setMainImage(image)}
                     >
@@ -263,21 +193,21 @@ export default function ProductDetailPage({ params }) {
                         </div>
                         <Link
                           href="#reviews"
-                          className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary ml-2"
+                          className="text-sm text-gray-500  hover:text-primary ml-2"
                         >
                           {product.reviewCount} reviews
                         </Link>
                       </div>
                     </div>
                     <h1 className="text-3xl font-bold">{product.name}</h1>
-                    <p className="text-gray-600 dark:text-gray-400 mt-2">{product.description}</p>
+                    <p className="text-gray-600  mt-2">{product.description}</p>
                   </div>
 
                   <div className="flex items-center">
                     {product.discount > 0 ? (
                       <>
                         <span className="text-3xl font-bold">{formatPrice(product.price)}</span>
-                        <span className="text-lg text-gray-500 dark:text-gray-400 line-through ml-3">
+                        <span className="text-lg text-gray-500  line-through ml-3">
                           {formatPrice(product.originalPrice)}
                         </span>
                         <Badge variant="destructive" className="ml-3">
@@ -300,7 +230,7 @@ export default function ProductDetailPage({ params }) {
                             className={`h-10 w-10 rounded-full border-2 ${
                               selectedColor.name === color.name
                                 ? "border-primary"
-                                : "border-gray-200 dark:border-gray-700"
+                                : "border-gray-200"
                             }`}
                             style={{ backgroundColor: color.value }}
                             onClick={() => setSelectedColor(color)}
@@ -325,7 +255,7 @@ export default function ProductDetailPage({ params }) {
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
-                        <div className="h-10 w-16 flex items-center justify-center border-y border-gray-200 dark:border-gray-700">
+                        <div className="h-10 w-16 flex items-center justify-center border-y border-gray-200 ">
                           {quantity}
                         </div>
                         <Button
@@ -337,7 +267,7 @@ export default function ProductDetailPage({ params }) {
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
-                        <span className="ml-4 text-sm text-gray-500 dark:text-gray-400">{product.stock} available</span>
+                        <span className="ml-4 text-sm text-gray-500 ">{product.stock} available</span>
                       </div>
                     </div>
 
@@ -361,40 +291,40 @@ export default function ProductDetailPage({ params }) {
 
                   {/* Product Highlights */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <Truck className="h-5 w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-medium text-sm">Free Shipping</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">For orders over Rp 500.000</p>
+                        <p className="text-xs text-gray-500 ">For orders over Rp 500.000</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <ShieldCheck className="h-5 w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-medium text-sm">Warranty</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Lifetime warranty</p>
+                        <p className="text-xs text-gray-500 ">Lifetime warranty</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <RefreshCw className="h-5 w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-medium text-sm">Easy Returns</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">30-day return policy</p>
+                        <p className="text-xs text-gray-500 ">30-day return policy</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <ShoppingCart className="h-5 w-5 text-primary" />
                       </div>
                       <div>
                         <h4 className="font-medium text-sm">Secure Checkout</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Multiple payment options</p>
+                        <p className="text-xs text-gray-500 ">Multiple payment options</p>
                       </div>
                     </div>
                   </div>
@@ -402,17 +332,17 @@ export default function ProductDetailPage({ params }) {
                   {/* Product Meta */}
                   <div className="pt-4 space-y-2 text-sm">
                     <p>
-                      <span className="text-gray-500 dark:text-gray-400">SKU:</span>{" "}
+                      <span className="text-gray-500 ">SKU:</span>{" "}
                       <span className="font-medium">{product.sku}</span>
                     </p>
                     <p>
-                      <span className="text-gray-500 dark:text-gray-400">Category:</span>{" "}
+                      <span className="text-gray-500 ">Category:</span>{" "}
                       <Link href={`/products?category=${product.category}`} className="font-medium hover:text-primary">
                         {product.category}
                       </Link>
                     </p>
                     <p>
-                      <span className="text-gray-500 dark:text-gray-400">Tags:</span>{" "}
+                      <span className="text-gray-500 ">Tags:</span>{" "}
                       {product.tags.map((tag, index) => (
                         <span key={tag}>
                           <Link href={`/products?tag=${tag}`} className="font-medium hover:text-primary">
@@ -430,10 +360,10 @@ export default function ProductDetailPage({ params }) {
         </section>
 
         {/* Product Details Tabs */}
-        <section className="py-12 bg-gray-50 dark:bg-gray-900">
+        <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
             <Tabs defaultValue="description" className="w-full">
-              <TabsList className="w-full justify-start mb-8 bg-transparent border-b border-gray-200 dark:border-gray-700 p-0 h-auto">
+              <TabsList className="w-full justify-start mb-8 bg-transparent border-b border-gray-200 p-0 h-auto">
                 <TabsTrigger
                   value="description"
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3 px-4"
@@ -461,13 +391,13 @@ export default function ProductDetailPage({ params }) {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="description" className="mt-0">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-                  <div className="prose dark:prose-invert max-w-none">
+                <div className="bg-white  rounded-lg p-6 shadow-sm">
+                  <div className="prose max-w-none">
                     <p>
                       The Aventis Hiking Backpack 45L is designed for serious hikers and backpackers who demand
-                      reliability, comfort, and organization from their gear. Whether you&apos;re planning a weekend trek or
-                      a more extended adventure, this pack offers the perfect balance of capacity, durability, and
-                      features.
+                      reliability, comfort, and organization from their gear. Whether you&apos;re planning a weekend
+                      trek or a more extended adventure, this pack offers the perfect balance of capacity, durability,
+                      and features.
                     </p>
                     <p>
                       Crafted from high-quality ripstop nylon, this backpack is built to withstand the rigors of the
@@ -475,9 +405,9 @@ export default function ProductDetailPage({ params }) {
                       additional protection during unexpected downpours.
                     </p>
                     <p>
-                      Comfort is paramount during long days on the trail, which is why we&apos;ve equipped this pack with an
-                      adjustable suspension system that can be customized to your torso length. The padded shoulder
-                      straps and hip belt distribute weight evenly, reducing fatigue and preventing hot spots.
+                      Comfort is paramount during long days on the trail, which is why we&apos;ve equipped this pack
+                      with an adjustable suspension system that can be customized to your torso length. The padded
+                      shoulder straps and hip belt distribute weight evenly, reducing fatigue and preventing hot spots.
                     </p>
                     <p>
                       Organization is thoughtfully designed with multiple access points to the main compartment,
@@ -486,14 +416,14 @@ export default function ProductDetailPage({ params }) {
                       refreshed on the move.
                     </p>
                     <p>
-                      Whether you&apos;re an experienced backpacker or preparing for your first multi-day hike, the Aventis
-                      Hiking Backpack 45L is the reliable companion you need for your outdoor adventures.
+                      Whether you&apos;re an experienced backpacker or preparing for your first multi-day hike, the
+                      Aventis Hiking Backpack 45L is the reliable companion you need for your outdoor adventures.
                     </p>
                   </div>
                 </div>
               </TabsContent>
               <TabsContent value="features" className="mt-0">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+                <div className="bg-white  rounded-lg p-6 shadow-sm">
                   <ul className="space-y-4">
                     {product.features.map((feature, index) => (
                       <li key={index} className="flex items-start">
@@ -509,22 +439,22 @@ export default function ProductDetailPage({ params }) {
                 </div>
               </TabsContent>
               <TabsContent value="specifications" className="mt-0">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+                <div className="bg-white  rounded-lg p-6 shadow-sm">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {Object.entries(product.specifications).map(([key, value]) => (
                       <div
                         key={key}
-                        className="flex justify-between border-b border-gray-100 dark:border-gray-700 pb-2"
+                        className="flex justify-between border-b border-gray-100 pb-2"
                       >
                         <span className="font-medium">{key}</span>
-                        <span className="text-gray-600 dark:text-gray-400">{value}</span>
+                        <span className="text-gray-600 ">{value}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               </TabsContent>
               <TabsContent value="reviews" className="mt-0">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+                <div className="bg-white  rounded-lg p-6 shadow-sm">
                   <div className="space-y-6">
                     {/* Review Summary */}
                     <div className="flex flex-col md:flex-row gap-6">
@@ -545,7 +475,7 @@ export default function ProductDetailPage({ params }) {
                               />
                             ))}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="text-sm text-gray-500 ">
                             Based on {product.reviewCount} reviews
                           </div>
                         </div>
@@ -559,14 +489,14 @@ export default function ProductDetailPage({ params }) {
                             const percentage = star === 5 ? 70 : star === 4 ? 20 : star === 3 ? 7 : star === 2 ? 2 : 1
                             return (
                               <div key={star} className="flex items-center">
-                                <div className="w-12 text-sm text-gray-600 dark:text-gray-400">{star} stars</div>
-                                <div className="w-full h-2 mx-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                <div className="w-12 text-sm text-gray-600 ">{star} stars</div>
+                                <div className="w-full h-2 mx-2 bg-gray-200 rounded-full">
                                   <div
                                     className="h-2 bg-yellow-400 rounded-full"
                                     style={{ width: `${percentage}%` }}
                                   ></div>
                                 </div>
-                                <div className="w-12 text-sm text-right text-gray-600 dark:text-gray-400">
+                                <div className="w-12 text-sm text-right text-gray-600 ">
                                   {percentage}%
                                 </div>
                               </div>
@@ -599,14 +529,14 @@ export default function ProductDetailPage({ params }) {
                                       />
                                     ))}
                                   </div>
-                                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{review.date}</span>
+                                  <span className="ml-2 text-sm text-gray-500 ">{review.date}</span>
                                 </div>
                               </div>
                             </div>
                           </div>
                           <div>
                             <h5 className="font-medium">{review.title}</h5>
-                            <p className="text-gray-600 dark:text-gray-400 mt-1">{review.content}</p>
+                            <p className="text-gray-600  mt-1">{review.content}</p>
                           </div>
                           <div className="flex items-center gap-4 pt-2">
                             <Button variant="ghost" size="sm" className="h-8 px-3">
@@ -636,11 +566,11 @@ export default function ProductDetailPage({ params }) {
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold mb-8">You May Also Like</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {product.relatedProducts.map((relatedProduct) => (
+              {relatedProducts.map((relatedProduct) => (
                 <Link
                   key={relatedProduct.id}
                   href={`/products/${relatedProduct.id}`}
-                  className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
+                  className="group bg-white  rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
                 >
                   <div className="relative h-48 overflow-hidden">
                     <Image
@@ -681,18 +611,18 @@ export default function ProductDetailPage({ params }) {
         </section>
 
         {/* Recently Viewed */}
-        <section className="py-12 bg-gray-50 dark:bg-gray-900">
+        <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold mb-8">Recently Viewed</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {product.relatedProducts
+              {relatedProducts
                 .slice(0, 4)
                 .reverse()
                 .map((relatedProduct) => (
                   <Link
                     key={relatedProduct.id}
                     href={`/products/${relatedProduct.id}`}
-                    className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
+                    className="group bg-white  rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
                   >
                     <div className="relative h-48 overflow-hidden">
                       <Image

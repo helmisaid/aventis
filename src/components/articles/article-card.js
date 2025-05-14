@@ -6,7 +6,7 @@ export default function ArticleCard({ article }) {
   return (
     <Link
       href={`/articles/${article.id}`}
-      className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col h-full transform hover:-translate-y-1"
+      className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 flex flex-col h-full transform hover:-translate-y-1"
     >
       <div className="relative h-48 overflow-hidden">
         <Image
@@ -22,7 +22,7 @@ export default function ArticleCard({ article }) {
         </div>
       </div>
       <div className="p-5 flex flex-col flex-grow">
-        <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs mb-3">
+        <div className="flex items-center text-gray-500 text-xs mb-3">
           <div className="flex items-center">
             <Calendar className="h-3 w-3 mr-1" />
             {article.date}
@@ -34,8 +34,8 @@ export default function ArticleCard({ article }) {
           </div>
         </div>
         <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">{article.title}</h3>
-        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-grow">{article.excerpt}</p>
-        <div className="flex items-center mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
+        <p className="text-gray-600 text-sm mb-4 flex-grow">{article.excerpt}</p>
+        <div className="flex items-center mt-auto pt-4 border-t border-gray-100">
           <Image
             src={article.author.avatar || "/placeholder.svg"}
             alt={article.author.name}

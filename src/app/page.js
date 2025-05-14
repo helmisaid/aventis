@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, ShoppingCart, Star, TrendingUp, Truck, Shield, ChevronRight, ChevronLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
+import { ArrowRight, TrendingUp, Truck, Shield, ChevronRight, ChevronLeft } from "lucide-react"
+import { Button } from "../components/ui/button"
+import Navbar from "../components/navbar"
+import Footer from "../components/footer"
+import ProductCard from "../components/ui/product-card"
+import { featuredProducts } from "../data/products"
 
-// Hero carousel images
 const heroImages = [
   {
     src: "/images/hero/carousel-1.jpg",
@@ -24,82 +25,29 @@ const heroImages = [
   },
 ]
 
+
 const categories = [
   {
-    category: "Hiking",
+    name: "Hiking",
     src: "/images/category/hiking-category.jpg",
     alt: "hiking category",
   },
   {
-    category: "Camping",
+    name: "Camping",
     src: "/images/category/camping-category.jpg",
     alt: "camping category",
   },
   {
-    category: "Clothing",
+    name: "Clothing",
     src: "/images/category/clothing-category.jpg",
     alt: "clothing category",
   },
   {
-    category: "Accessories",
+    name: "Accessories",
     src: "/images/category/accessories-category.jpg",
     alt: "accessories category",
   },
 ]
-
-// Featured products data
-const featuredProducts = [
-  {
-    id: 1,
-    name: "Aventis Hiking Backpack",
-    description: "Lightweight and durable for all your adventures",
-    price: 1250000,
-    image: "/images/products/hiking-backpack-product.jpg",
-    rating: 5,
-    reviews: 24,
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Pro Trekking Poles",
-    description: "Adjustable carbon fiber poles for stability",
-    price: 850000,
-    image: "/images/products/tracking-pole-product.jpg",
-    rating: 4,
-    reviews: 18,
-    isNew: false,
-  },
-  {
-    id: 3,
-    name: "Waterproof Tent 2-Person",
-    description: "Easy setup and weather resistant design",
-    price: 2100000,
-    image: "/images/products/2p-tent-product.jpg",
-    rating: 5,
-    reviews: 32,
-    isNew: true,
-  },
-  {
-    id: 4,
-    name: "Insulated Water Bottle",
-    description: "Keeps drinks hot or cold for 24 hours",
-    price: 350000,
-    image: "/images/products/insulated-water-bottle-product.jpg",
-    rating: 4,
-    reviews: 41,
-    isNew: false,
-  },
-]
-
-// Format price to IDR
-const formatPrice = (price) => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price)
-}
 
 export default function Home() {
   const [currentHeroSlide, setCurrentHeroSlide] = useState(0)
@@ -264,7 +212,7 @@ export default function Home() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {categories.map((category, index) => (
                 <Link
-                  href={`/products?category=${category.category.toLowerCase()}`}
+                  href={`/products?category=${category.name.toLowerCase()}`}
                   key={index}
                   className={`group relative h-64 rounded-lg overflow-hidden shadow-lg transform transition-all duration-700 ${
                     isVisible["categories-section"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
@@ -273,13 +221,13 @@ export default function Home() {
                 >
                   <Image
                     src={category.src}
-                    alt={category.alt}
+                    alt={category.name}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6 transition-all duration-300 group-hover:from-black/80">
                     <div>
-                      <h3 className="text-xl font-semibold text-white mb-2">{category.category}</h3>
+                      <h3 className="text-xl font-semibold text-white mb-2">{category.name}</h3>
                       <span className="inline-block bg-primary text-white text-sm px-3 py-1 rounded-full opacity-0 transform translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
                         Explore Now
                       </span>
@@ -306,50 +254,12 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredProducts.map((product, index) => (
-                <div
+                <ProductCard
                   key={product.id}
-                  className={`group bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-md transition-all duration-700 ${
-                    isVisible["products-section"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                  }`}
+                  product={product}
+                  className={`${isVisible["products-section"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
                   style={{ transitionDelay: `${index * 100}ms` }}
-                >
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    {product.isNew && (
-                      <div className="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
-                        New
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2">
-                      <Button size="sm" variant="secondary" className="rounded-full p-2">
-                        <ShoppingCart className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center mb-2">
-                      <div className="flex text-yellow-400">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`h-4 w-4 ${i < product.rating ? "fill-current" : ""}`} />
-                        ))}
-                      </div>
-                      <span className="text-xs text-gray-500 ml-2">({product.reviews} reviews)</span>
-                    </div>
-                    <h3 className="font-semibold mb-1">{product.name}</h3>
-                    <p className="text-sm text-gray-500 mb-3">{product.description}</p>
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold">{formatPrice(product.price)}</span>
-                      <Button size="sm" className="rounded-full p-2 bg-primary hover:bg-primary/90 text-white">
-                        <ShoppingCart className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                />
               ))}
             </div>
           </div>
@@ -419,7 +329,11 @@ export default function Home() {
             <p className="text-lg mb-8 max-w-2xl mx-auto">
               Join thousands of outdoor enthusiasts who trust Aventis for their gear needs.
             </p>
-            <Button size="lg" variant="secondary" className="bg-white border border-gray-400 text-primary hover:text-white hover:bg-black">
+            <Button
+              size="lg"
+              variant="secondary"
+              className="bg-white border border-gray-400 text-primary hover:text-white hover:bg-black"
+            >
               Shop Now <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>

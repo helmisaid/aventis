@@ -17,57 +17,178 @@ import ArticleCardSkeleton from "../../components/articles/article-card-skeleton
 import Pagination from "../../components/Pagination";
 
 const categories = [
-  "All",
-  "Hiking",
+  "Semua",
+  "Pendakian",
   "Camping",
-  "Climbing",
+  "Panjat Tebing",
   "Backpacking",
   "Survival",
-  "Gear Reviews",
+  "Review Alat",
 ];
 
 const featuredArticle = {
   id: "1",
-  title: "Essential Gear for Your First Hiking Adventure",
+  title: "Pilih Carrier yang Tepat untuk Pendakian di 2025",
   excerpt:
-    "Discover the must-have equipment and gear for beginners venturing into the great outdoors. From backpacks to boots, we've got you covered.",
-  image: "/placeholder.svg?height=600&width=1200",
-  category: "Hiking",
-  date: "May 15, 2023",
-  readTime: "8 min read",
+    "Carrier adalah sahabat pendaki sejati! Yuk, kenali teknologi carrier terbaru di 2025 yang ringan, tahan air, dan bikin pundakmu nyaman meski bawa beban berat.",
+  image:
+    "/images/article/kerir.jpg",
+  category: "Pendakian",
+  date: "13 Mei 2025",
+  readTime: "7 menit baca",
   author: {
-    name: "Alex Johnson",
-    avatar: "/placeholder.svg?height=100&width=100",
+    name: "Helmi Said",
+    avatar:
+      "/images/article/helmi_avatar.jpg",
   },
 };
 
-// Mock articles data
-const articles = Array.from({ length: 9 }, (_, i) => ({
-  id: `${i + 2}`,
-  title: `${
-    [
-      "The Ultimate Guide to Lightweight Camping",
-      "Top 10 Climbing Destinations in Indonesia",
-      "How to Choose the Perfect Hiking Boots",
-      "Survival Skills Every Outdoor Enthusiast Should Know",
-      "Eco-Friendly Outdoor Gear: A Comprehensive Review",
-      "Backpacking Through Java: A 7-Day Itinerary",
-      "Winter Camping: Tips and Tricks for Staying Warm",
-      "Mountain Photography: Capturing the Perfect Shot",
-      "Nutrition on the Trail: Meal Planning for Multi-Day Hikes",
-    ][i % 9]
-  }`,
-  excerpt:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl nisl sit amet nisl.",
-  image: `/placeholder.svg?height=400&width=600&text=Article+${i + 2}`,
-  category: categories[Math.floor(Math.random() * (categories.length - 1)) + 1],
-  date: `May ${i + 1}, 2023`,
-  readTime: `${Math.floor(Math.random() * 10) + 5} min read`,
-  author: {
-    name: "Alex Johnson",
-    avatar: "/placeholder.svg?height=100&width=100",
+const articles = [
+  {
+    id: "2",
+    title: "Gunung Rinjani: Destinasi Pendakian Wajib di 2025",
+    excerpt:
+      "Rinjani lagi hits banget! Simak tips pendakian, rute terbaik, dan alat wajib bawa biar petualanganmu ke puncak aman dan seru.",
+    image:
+      "/images/article/rinjani.jpg",
+    category: "Pendakian",
+    date: "10 Mei 2025",
+    readTime: "6 menit baca",
+    author: {
+      name: "Helmi Said",
+      avatar:
+        "/images/article/helmi_avatar.jpg",
+    },
   },
-}));
+  {
+    id: "3",
+    title: "Review Sepatu Pendakian Terbaru: Tahan Banting & Anti Slip",
+    excerpt:
+      "Cari sepatu pendakian yang kuat di medan berbatu? Kami ulas 3 model sepatu terbaru di Aventis yang bikin langkahmu percaya diri!",
+    image:
+      "/images/article/sepatu_daki.jpg",
+    category: "Review Alat",
+    date: "8 Mei 2025",
+    readTime: "5 menit baca",
+    author: {
+      name: "Siti Aisyah",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=32&q=80",
+    },
+  },
+  {
+    id: "4",
+    title: "Tips Camping di Gunung Bromo Biar Gak Kedinginan",
+    excerpt:
+      "Camping di Bromo itu seru, tapi dinginnya nampol! Ini tips pilih sleeping bag dan tenda yang cocok dari koleksi Aventis Adventure.",
+    image:
+      "/images/article/bromo.jpg",
+    category: "Camping",
+    date: "7 Mei 2025",
+    readTime: "6 menit baca",
+    author: {
+      name: "Helmi Said",
+      avatar:
+        "/images/article/helmi_avatar.jpg",
+    },
+  },
+  {
+    id: "5",
+    title: "Tren Jaket Windproof untuk Pendakian Musim Hujan",
+    excerpt:
+      "Musim hujan gak bikin pendakian batal! Cek rekomendasi jaket windproof terbaru yang ringan dan tahan air dari Aventis.",
+    image:
+      "/images/article/jaket_windproof.jpg",
+    category: "Review Alat",
+    date: "6 Mei 2025",
+    readTime: "4 menit baca",
+    author: {
+      name: "Siti Aisyah",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=32&q=80",
+    },
+  },
+  {
+    id: "6",
+    title: "Pendakian Gunung Semeru: Persiapan & Alat yang Dibutuhkan",
+    excerpt:
+      "Semeru selalu jadi impian pendaki! Simak checklist alat pendakian dan tips biar pendakianmu lancar jaya.",
+    image:
+      "/images/article/semeru.jpg",
+    category: "Pendakian",
+    date: "5 Mei 2025",
+    readTime: "8 menit baca",
+    author: {
+      name: "Helmi Said",
+      avatar:
+        "/images/article/helmi_avatar.jpg",
+    },
+  },
+  {
+    id: "7",
+    title: "Cara Pilih Kompor Camping yang Praktis & Aman",
+    excerpt:
+      "Mau masak di puncak tanpa ribet? Kami review kompor camping portabel terbaik di Aventis yang hemat bahan bakar.",
+    image:
+      "/images/article/kompor.jpg",
+    category: "Review Alat",
+    date: "4 Mei 2025",
+    readTime: "5 menit baca",
+    author: {
+      name: "Siti Aisyah",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=32&q=80",
+    },
+  },
+  {
+    id: "8",
+    title: "Backpacking ke Gunung Prau: Budget & Perlengkapan",
+    excerpt:
+      "Gunung Prau cocok buat pemula! Ini panduan backpacking hemat plus rekomendasi alat outdoor dari Aventis Adventure.",
+    image:
+      "/images/article/prau.jpg",
+    category: "Backpacking",
+    date: "3 Mei 2025",
+    readTime: "7 menit baca",
+    author: {
+      name: "Helmi Said",
+      avatar:
+        "/images/article/helmi_avatar.jpg",
+    },
+  },
+  {
+    id: "9",
+    title: "Teknik Survival di Hutan untuk Pendaki Pemula",
+    excerpt:
+      "Tersesat di hutan? Jangan panik! Pelajari teknik survival dasar dan alat wajib bawa dari Aventis biar aman.",
+    image:
+      "/images/article/survival.jpg",
+    category: "Survival",
+    date: "2 Mei 2025",
+    readTime: "6 menit baca",
+    author: {
+      name: "Siti Aisyah",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=32&q=80",
+    },
+  },
+  {
+    id: "10",
+    title: "Panduan Panjat Tebing di Labuan Bajo",
+    excerpt:
+      "Panjat tebing di Labuan Bajo lagi ngetren! Simak rute populer dan alat panjat rekomendasi dari Aventis Adventure.",
+    image:
+      "/images/article/panjat_tebing.jpg",
+    category: "Panjat Tebing",
+    date: "1 Mei 2025",
+    readTime: "5 menit baca",
+    author: {
+      name: "Helmi Said",
+      avatar:
+        "/images/article/helmi_avatar.jpg",
+    },
+  },
+];
 
 export default function ArticlesPage() {
   return (
@@ -75,21 +196,21 @@ export default function ArticlesPage() {
       <Navbar />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gray-50 dark:bg-gray-900 py-12 md:py-16">
+        <section className="bg-gray-50 py-12 md:py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                Aventis Blog
+                Blog Aventis Adventure
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                Discover tips, guides, and inspiration for your outdoor
-                adventures
+              <p className="text-lg text-gray-600 mb-8">
+                Temukan tips, panduan, dan inspirasi untuk petualangan outdoor
+                kamu
               </p>
               <div className="relative max-w-xl mx-auto">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
                 <Input
                   type="search"
-                  placeholder="Search articles..."
+                  placeholder="Cari artikel..."
                   className="pl-10 pr-4 py-2 w-full rounded-full"
                 />
               </div>
@@ -100,8 +221,8 @@ export default function ArticlesPage() {
         {/* Featured Article */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8">Featured Article</h2>
-            <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl">
+            <h2 className="text-2xl font-bold mb-8">Artikel Unggulan</h2>
+            <div className="bg-white rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl">
               <div className="md:flex">
                 <div className="md:w-1/2 relative h-64 md:h-auto">
                   <Image
@@ -118,12 +239,12 @@ export default function ArticlesPage() {
                         {featuredArticle.category}
                       </span>
                       <span className="mx-2 text-gray-400">•</span>
-                      <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+                      <div className="flex items-center text-gray-400 text-sm">
                         <Calendar className="h-3 w-3 mr-1" />
                         {featuredArticle.date}
                       </div>
                       <span className="mx-2 text-gray-400">•</span>
-                      <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+                      <div className="flex items-center text-gray-400 text-sm">
                         <Clock className="h-3 w-3 mr-1" />
                         {featuredArticle.readTime}
                       </div>
@@ -131,7 +252,7 @@ export default function ArticlesPage() {
                     <h3 className="text-xl md:text-2xl font-bold mb-3">
                       {featuredArticle.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    <p className="text-gray-600 mb-4">
                       {featuredArticle.excerpt}
                     </p>
                   </div>
@@ -152,7 +273,8 @@ export default function ArticlesPage() {
                     </div>
                     <Link href={`/articles/${featuredArticle.id}`}>
                       <Button variant="link" className="text-primary p-0">
-                        Read More <ArrowRight className="ml-1 h-4 w-4" />
+                        Baca Selengkapnya{" "}
+                        <ArrowRight className="ml-1 h-4 w-4" />
                       </Button>
                     </Link>
                   </div>
@@ -163,12 +285,12 @@ export default function ArticlesPage() {
         </section>
 
         {/* Articles List */}
-        <section className="py-12 bg-gray-50 dark:bg-gray-900">
+        <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
-            <Tabs defaultValue="All" className="mb-8">
+            <Tabs defaultValue="Semua" className="mb-8">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Latest Articles</h2>
-                <TabsList className="bg-white dark:bg-gray-800">
+                <h2 className="text-2xl font-bold">Artikel Terbaru</h2>
+                <TabsList className="bg-white">
                   {categories.slice(0, 5).map((category) => (
                     <TabsTrigger
                       key={category}
@@ -178,8 +300,8 @@ export default function ArticlesPage() {
                       {category}
                     </TabsTrigger>
                   ))}
-                  <TabsTrigger value="More" className="text-sm">
-                    More
+                  <TabsTrigger value="Lainnya" className="text-sm">
+                    Lainnya
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -195,7 +317,8 @@ export default function ArticlesPage() {
                       {articles
                         .filter(
                           (article) =>
-                            category === "All" || article.category === category
+                            category === "Semua" ||
+                            article.category === category
                         )
                         .map((article) => (
                           <ArticleCard key={article.id} article={article} />
@@ -205,13 +328,13 @@ export default function ArticlesPage() {
                 </TabsContent>
               ))}
 
-              <TabsContent value="More" className="mt-0">
+              <TabsContent value="Lainnya" className="mt-0">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {categories.slice(5).map((category) => (
                     <Link
                       key={category}
                       href={`/articles?category=${category}`}
-                      className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center justify-between"
+                      className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center justify-between"
                     >
                       <div className="flex items-center">
                         <Tag className="h-5 w-5 mr-2 text-primary" />
@@ -228,31 +351,6 @@ export default function ArticlesPage() {
           </div>
         </section>
 
-        {/* Newsletter */}
-        <section className="py-16 bg-primary text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Stay Updated with Aventis
-            </h2>
-            <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
-              Subscribe to our newsletter for the latest articles, guides, and
-              outdoor inspiration.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-              <Input
-                type="email"
-                placeholder="Your email address"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-              />
-              <Button
-                variant="secondary"
-                className="bg-white text-primary hover:bg-gray-100"
-              >
-                Subscribe
-              </Button>
-            </div>
-          </div>
-        </section>
       </main>
       <Footer />
     </div>
