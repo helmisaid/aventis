@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
@@ -15,7 +16,6 @@ import {
   ChevronRight,
   LogOut,
   Settings,
-  Home,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -112,9 +112,9 @@ export default function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile sidebar toggle */}
+      {/* Mobile sidebar toggle - moved to top right */}
       <button
-        className="fixed top-4 left-4 z-50 md:hidden bg-gray-900 hover:bg-gray-800 text-white p-2.5 rounded-lg shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
+        className="fixed top-4 right-4 z-50 md:hidden bg-gray-900 hover:bg-gray-800 text-white p-2.5 rounded-lg shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2"
         onClick={toggleMobileSidebar}
         aria-label={isMobileOpen ? "Tutup menu navigasi" : "Buka menu navigasi"}
         aria-expanded={isMobileOpen}
@@ -140,14 +140,20 @@ export default function AdminSidebar() {
         )}
       >
         <div className="flex flex-col h-full">
-          {/* Header */}
+          {/* Header with logo */}
           <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 bg-gray-50">
             <Link
               href="/"
-              className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-gray-600 rounded-md p-1 transition-colors hover:bg-gray-100"
+              className="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-gray-600 rounded-md p-1 transition-colors hover:bg-gray-100"
             >
-              <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
-                <Home className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 relative">
+                <Image
+                  src="/logo.png"
+                  alt="Aventis Adventure Logo"
+                  fill
+                  className="object-contain"
+                  sizes="40px"
+                />
               </div>
               <span className="text-lg font-bold text-gray-900">
                 Aventis Admin
