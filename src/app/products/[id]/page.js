@@ -15,6 +15,9 @@ import {
   Truck,
   ShieldCheck,
   RefreshCw,
+  CheckCircle,
+  Info,
+  Award,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -45,9 +48,28 @@ export default function ProductDetailPage({ params }) {
     // Fetch product data based on the ID
     const productData = getProductById(productId);
     if (productData) {
-      setProduct(productData);
-      setMainImage(productData.images[0]);
-      setSelectedColor(productData.colors[0]);
+      // Update reviews with Unsplash avatars
+      const updatedProduct = {
+        ...productData,
+        reviews: productData.reviews.map((review, index) => ({
+          ...review,
+          user: {
+            ...review.user,
+            avatar: `https://images.unsplash.com/photo-${
+              [
+                "1507003211169-0a1dd7228f2d",
+                "1494790108755-2616c5e29a5b",
+                "1438761681033-6461ffad8d80",
+                "1472099645785-5658abf4ff4e",
+                "1500648767791-00dcc994a43e",
+              ][index % 5]
+            }?w=100&h=100&fit=crop&crop=face`,
+          },
+        })),
+      };
+      setProduct(updatedProduct);
+      setMainImage(updatedProduct.images[0]);
+      setSelectedColor(updatedProduct.colors[0]);
 
       // Get related products
       const related = getRelatedProducts(productId);
@@ -74,7 +96,7 @@ export default function ProductDetailPage({ params }) {
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
         </main>
         <Footer />
       </div>
@@ -106,27 +128,29 @@ export default function ProductDetailPage({ params }) {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
-        {/* Rest of your component remains the same */}
         {/* Breadcrumbs */}
-        <div className="py-3">
+        <div className="py-3 bg-gray-50">
           <div className="container mx-auto px-4">
-            <div className="flex items-center text-sm text-slate-600 ">
-              <Link href="/" className="hover:text-primary">
+            <div className="flex items-center text-sm text-gray-600">
+              <Link href="/" className="hover:text-gray-900 transition-colors">
                 Beranda
               </Link>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <Link href="/products" className="hover:text-primary">
+              <Link
+                href="/products"
+                className="hover:text-gray-900 transition-colors"
+              >
                 Produk
               </Link>
               <ChevronRight className="h-4 w-4 mx-2" />
               <Link
                 href={`/products?category=${product.category}`}
-                className="hover:text-primary"
+                className="hover:text-gray-900 transition-colors"
               >
                 {product.category}
               </Link>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <span className="text-gray-700 ">{product.name}</span>
+              <span className="text-gray-900 font-medium">{product.name}</span>
             </div>
           </div>
         </div>
@@ -137,16 +161,16 @@ export default function ProductDetailPage({ params }) {
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Product Images */}
               <div className="lg:w-1/2 space-y-4">
-                <div className="relative h-96 md:h-[500px] rounded-lg overflow-hidden border border-gray-200 ">
+                <div className="relative h-96 md:h-[500px] rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
                   <Image
                     src={mainImage || "/placeholder.svg"}
                     alt={product.name}
                     fill
-                    className="object-contain"
+                    className="object-contain transition-transform duration-300 hover:scale-105"
                     priority
                   />
                   {product.discount > 0 && (
-                    <div className="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                    <div className="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">
                       -{product.discount}%
                     </div>
                   )}
@@ -155,10 +179,10 @@ export default function ProductDetailPage({ params }) {
                   {product.images.map((image, index) => (
                     <button
                       key={index}
-                      className={`relative h-24 w-24 rounded-md overflow-hidden border-2 ${
+                      className={`relative h-24 w-24 rounded-lg overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
                         mainImage === image
-                          ? "border-primary"
-                          : "border-gray-200 hover:border-gray-300 "
+                          ? "border-gray-900 shadow-md"
+                          : "border-gray-200 hover:border-gray-400"
                       }`}
                       onClick={() => setMainImage(image)}
                     >
@@ -180,7 +204,7 @@ export default function ProductDetailPage({ params }) {
                     <div className="flex items-center mb-2">
                       <Link
                         href={`/products?brand=${product.brand}`}
-                        className="text-sm font-medium text-primary hover:underline"
+                        className="text-sm font-medium text-gray-900 hover:underline"
                       >
                         {product.brand}
                       </Link>
@@ -202,32 +226,34 @@ export default function ProductDetailPage({ params }) {
                         </div>
                         <Link
                           href="#reviews"
-                          className="text-sm text-gray-500  hover:text-primary ml-2"
+                          className="text-sm text-gray-600 hover:text-gray-900 ml-2 transition-colors"
                         >
                           {product.reviewCount} ulasan
                         </Link>
                       </div>
                     </div>
-                    <h1 className="text-3xl font-bold">{product.name}</h1>
-                    <p className="text-gray-600  mt-2">{product.description}</p>
+                    <h1 className="text-3xl font-bold text-gray-900">
+                      {product.name}
+                    </h1>
+                    <p className="text-gray-600 mt-2">{product.description}</p>
                   </div>
 
                   <div className="flex items-center">
                     {product.discount > 0 ? (
                       <>
-                        <span className="text-3xl font-bold">
+                        <span className="text-3xl font-bold text-gray-900">
                           {formatPrice(product.price)}
                         </span>
-                        <span className="text-lg text-gray-500  line-through ml-3">
+                        <span className="text-lg text-gray-500 line-through ml-3">
                           {formatPrice(product.originalPrice)}
                         </span>
                         <Badge variant="destructive" className="ml-3">
-                          Save{" "}
+                          Hemat{" "}
                           {formatPrice(product.originalPrice - product.price)}
                         </Badge>
                       </>
                     ) : (
-                      <span className="text-3xl font-bold">
+                      <span className="text-3xl font-bold text-gray-900">
                         {formatPrice(product.price)}
                       </span>
                     )}
@@ -236,17 +262,17 @@ export default function ProductDetailPage({ params }) {
                   <div className="space-y-4">
                     {/* Color Selection */}
                     <div>
-                      <h3 className="text-sm font-medium mb-3">
+                      <h3 className="text-sm font-medium mb-3 text-gray-900">
                         Warna: {selectedColor.name}
                       </h3>
                       <div className="flex gap-2">
                         {product.colors.map((color) => (
                           <button
                             key={color.name}
-                            className={`h-10 w-10 rounded-full border-2 ${
+                            className={`h-10 w-10 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
                               selectedColor.name === color.name
-                                ? "border-primary"
-                                : "border-gray-200"
+                                ? "border-gray-900 shadow-md"
+                                : "border-gray-300 hover:border-gray-500"
                             }`}
                             style={{ backgroundColor: color.value }}
                             onClick={() => setSelectedColor(color)}
@@ -260,18 +286,20 @@ export default function ProductDetailPage({ params }) {
 
                     {/* Quantity */}
                     <div>
-                      <h3 className="text-sm font-medium mb-3">Jumlah</h3>
+                      <h3 className="text-sm font-medium mb-3 text-gray-900">
+                        Jumlah
+                      </h3>
                       <div className="flex items-center">
                         <Button
                           variant="outline"
                           size="icon"
                           onClick={decrementQuantity}
                           disabled={quantity <= 1}
-                          className="h-10 w-10 rounded-r-none"
+                          className="h-10 w-10 rounded-r-none border-gray-300 hover:bg-gray-50"
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
-                        <div className="h-10 w-16 flex items-center justify-center border-y border-gray-200 ">
+                        <div className="h-10 w-16 flex items-center justify-center border-y border-gray-300 bg-white font-medium">
                           {quantity}
                         </div>
                         <Button
@@ -279,11 +307,11 @@ export default function ProductDetailPage({ params }) {
                           size="icon"
                           onClick={incrementQuantity}
                           disabled={quantity >= product.stock}
-                          className="h-10 w-10 rounded-l-none"
+                          className="h-10 w-10 rounded-l-none border-gray-300 hover:bg-gray-50"
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
-                        <span className="ml-4 text-sm text-gray-500 ">
+                        <span className="ml-4 text-sm text-gray-600">
                           {product.stock} tersedia
                         </span>
                       </div>
@@ -291,13 +319,16 @@ export default function ProductDetailPage({ params }) {
 
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                      <Button className="sm:flex-1" size="lg">
+                      <Button
+                        className="sm:flex-1 bg-gray-900 hover:bg-gray-800"
+                        size="lg"
+                      >
                         <ShoppingCart className="h-5 w-5 mr-2" />
                         Tambah ke Keranjang
                       </Button>
                       <Button
                         variant="secondary"
-                        className="sm:flex-1"
+                        className="sm:flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900"
                         size="lg"
                       >
                         Beli Sekarang
@@ -305,14 +336,14 @@ export default function ProductDetailPage({ params }) {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-12 w-12"
+                        className="h-12 w-12 border-gray-300 hover:bg-gray-50"
                       >
                         <Heart className="h-5 w-5" />
                       </Button>
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-12 w-12"
+                        className="h-12 w-12 border-gray-300 hover:bg-gray-50"
                       >
                         <Share2 className="h-5 w-5" />
                       </Button>
@@ -321,48 +352,54 @@ export default function ProductDetailPage({ params }) {
 
                   {/* Product Highlights */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Truck className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
+                        <Truck className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-sm">Gratis Ongkir</h4>
-                        <p className="text-xs text-gray-500 ">
+                        <h4 className="font-medium text-sm text-gray-900">
+                          Gratis Ongkir
+                        </h4>
+                        <p className="text-xs text-gray-600">
                           Untuk pesanan di atas Rp 500.000
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <ShieldCheck className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
+                        <ShieldCheck className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-sm">Garansi</h4>
-                        <p className="text-xs text-gray-500 ">
+                        <h4 className="font-medium text-sm text-gray-900">
+                          Garansi
+                        </h4>
+                        <p className="text-xs text-gray-600">
                           Garansi seumur hidup
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <RefreshCw className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
+                        <RefreshCw className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-sm">
+                        <h4 className="font-medium text-sm text-gray-900">
                           Pengembalian Mudah
                         </h4>
-                        <p className="text-xs text-gray-500 ">
+                        <p className="text-xs text-gray-600">
                           Kebijakan pengembalian 30 hari
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <ShoppingCart className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
+                      <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
+                        <ShoppingCart className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-sm">Checkout Aman</h4>
-                        <p className="text-xs text-gray-500 ">
+                        <h4 className="font-medium text-sm text-gray-900">
+                          Checkout Aman
+                        </h4>
+                        <p className="text-xs text-gray-600">
                           Berbagai opsi pembayaran
                         </p>
                       </div>
@@ -372,25 +409,27 @@ export default function ProductDetailPage({ params }) {
                   {/* Product Meta */}
                   <div className="pt-4 space-y-2 text-sm">
                     <p>
-                      <span className="text-gray-500 ">SKU:</span>{" "}
-                      <span className="font-medium">{product.sku}</span>
+                      <span className="text-gray-600">SKU:</span>{" "}
+                      <span className="font-medium text-gray-900">
+                        {product.sku}
+                      </span>
                     </p>
                     <p>
-                      <span className="text-gray-500 ">Kategori:</span>{" "}
+                      <span className="text-gray-600">Kategori:</span>{" "}
                       <Link
                         href={`/products?category=${product.category}`}
-                        className="font-medium hover:text-primary"
+                        className="font-medium text-gray-900 hover:underline"
                       >
                         {product.category}
                       </Link>
                     </p>
                     <p>
-                      <span className="text-gray-500 ">Tag:</span>{" "}
+                      <span className="text-gray-600">Tag:</span>{" "}
                       {product.tags.map((tag, index) => (
                         <span key={tag}>
                           <Link
                             href={`/products?tag=${tag}`}
-                            className="font-medium hover:text-primary"
+                            className="font-medium text-gray-900 hover:underline"
                           >
                             {tag}
                           </Link>
@@ -405,137 +444,157 @@ export default function ProductDetailPage({ params }) {
           </div>
         </section>
 
-        {/* Product Details Tabs */}
+        {/* Product Details Tabs - ENHANCED VERSION */}
         <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
             <Tabs defaultValue="description" className="w-full">
-              <TabsList className="w-full justify-start mb-8 bg-transparent border-b border-gray-200 p-0 h-auto">
+              <TabsList className="w-full justify-start mb-8 bg-white border border-gray-200 rounded-lg p-1 h-auto shadow-sm">
                 <TabsTrigger
                   value="description"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3 px-4"
+                  className="flex-1 rounded-md py-3 px-6 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100"
                 >
+                  <Info className="h-4 w-4 mr-2" />
                   Deskripsi
                 </TabsTrigger>
                 <TabsTrigger
                   value="features"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3 px-4"
+                  className="flex-1 rounded-md py-3 px-6 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100"
                 >
+                  <CheckCircle className="h-4 w-4 mr-2" />
                   Fitur
                 </TabsTrigger>
                 <TabsTrigger
                   value="specifications"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3 px-4"
+                  className="flex-1 rounded-md py-3 px-6 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100"
                 >
+                  <Award className="h-4 w-4 mr-2" />
                   Spesifikasi
                 </TabsTrigger>
                 <TabsTrigger
                   value="reviews"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-3 px-4"
+                  className="flex-1 rounded-md py-3 px-6 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100"
                   id="reviews"
                 >
+                  <Star className="h-4 w-4 mr-2" />
                   Ulasan ({product.reviewCount})
                 </TabsTrigger>
               </TabsList>
+
               <TabsContent value="description" className="mt-0">
-                <div className="bg-white  rounded-lg p-6 shadow-sm">
+                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
                   <div className="prose max-w-none">
-                    <p>
-                      The Aventis Hiking Backpack 45L is designed for serious
-                      hikers and backpackers who demand reliability, comfort,
-                      and organization from their gear. Whether you&apos;re
-                      planning a weekend trek or a more extended adventure, this
-                      pack offers the perfect balance of capacity, durability,
-                      and features.
-                    </p>
-                    <p>
-                      Crafted from high-quality ripstop nylon, this backpack is
-                      built to withstand the rigors of the trail while keeping
-                      your gear protected from the elements. The integrated rain
-                      cover provides additional protection during unexpected
-                      downpours.
-                    </p>
-                    <p>
-                      Comfort is paramount during long days on the trail, which
-                      is why we&apos;ve equipped this pack with an adjustable
-                      suspension system that can be customized to your torso
-                      length. The padded shoulder straps and hip belt distribute
-                      weight evenly, reducing fatigue and preventing hot spots.
-                    </p>
-                    <p>
-                      Organization is thoughtfully designed with multiple access
-                      points to the main compartment, allowing you to reach
-                      items without unpacking everything. External attachment
-                      points accommodate trekking poles, ice axes, or other
-                      gear, while the hydration reservoir compatibility keeps
-                      you refreshed on the move.
-                    </p>
-                    <p>
-                      Whether you&apos;re an experienced backpacker or preparing
-                      for your first multi-day hike, the Aventis Hiking Backpack
-                      45L is the reliable companion you need for your outdoor
-                      adventures.
-                    </p>
+                    <div className="mb-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-4">
+                        Tentang Produk Ini
+                      </h3>
+                      <div className="h-1 w-20 bg-gray-900 rounded-full mb-6"></div>
+                    </div>
+                    <div className="space-y-4 text-gray-700 leading-relaxed">
+                      <p>
+                        The Aventis Hiking Backpack 45L is designed for serious
+                        hikers and backpackers who demand reliability, comfort,
+                        and organization from their gear. Whether youre planning
+                        a weekend trek or a more extended adventure, this pack
+                        offers the perfect balance of capacity, durability, and
+                        features.
+                      </p>
+                      <p>
+                        Crafted from high-quality ripstop nylon, this backpack
+                        is built to withstand the rigors of the trail while
+                        keeping your gear protected from the elements. The
+                        integrated rain cover provides additional protection
+                        during unexpected downpours.
+                      </p>
+                      <p>
+                        Comfort is paramount during long days on the trail,
+                        which is why weve equipped this pack with an adjustable
+                        suspension system that can be customized to your torso
+                        length. The padded shoulder straps and hip belt
+                        distribute weight evenly, reducing fatigue and
+                        preventing hot spots.
+                      </p>
+                      <p>
+                        Organization is thoughtfully designed with multiple
+                        access points to the main compartment, allowing you to
+                        reach items without unpacking everything. External
+                        attachment points accommodate trekking poles, ice axes,
+                        or other gear, while the hydration reservoir
+                        compatibility keeps you refreshed on the move.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </TabsContent>
+
               <TabsContent value="features" className="mt-0">
-                <div className="bg-white  rounded-lg p-6 shadow-sm">
-                  <ul className="space-y-4">
+                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">
+                      Fitur Unggulan
+                    </h3>
+                    <div className="h-1 w-20 bg-gray-900 rounded-full mb-6"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {product.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
-                        <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
-                          <svg
-                            className="h-4 w-4 text-primary"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
+                      <div
+                        key={index}
+                        className="flex items-start p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="h-6 w-6 rounded-full bg-gray-900 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                          <CheckCircle className="h-4 w-4 text-white" />
                         </div>
-                        <span>{feature}</span>
-                      </li>
+                        <span className="text-gray-700 font-medium">
+                          {feature}
+                        </span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </TabsContent>
+
               <TabsContent value="specifications" className="mt-0">
-                <div className="bg-white  rounded-lg p-6 shadow-sm">
+                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">
+                      Spesifikasi Teknis
+                    </h3>
+                    <div className="h-1 w-20 bg-gray-900 rounded-full mb-6"></div>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {Object.entries(product.specifications).map(
                       ([key, value]) => (
                         <div
                           key={key}
-                          className="flex justify-between border-b border-gray-100 pb-2"
+                          className="flex justify-between items-center p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
                         >
-                          <span className="font-medium">{key}</span>
-                          <span className="text-gray-600 ">{value}</span>
+                          <span className="font-medium text-gray-900">
+                            {key}
+                          </span>
+                          <span className="text-gray-700 font-semibold">
+                            {value}
+                          </span>
                         </div>
                       )
                     )}
                   </div>
                 </div>
               </TabsContent>
+
               <TabsContent value="reviews" className="mt-0">
-                <div className="bg-white  rounded-lg p-6 shadow-sm">
-                  <div className="space-y-6">
+                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                  <div className="space-y-8">
                     {/* Review Summary */}
-                    <div className="flex flex-col md:flex-row gap-6">
+                    <div className="flex flex-col md:flex-row gap-8">
                       <div className="md:w-1/3">
-                        <div className="text-center">
-                          <div className="text-5xl font-bold">
+                        <div className="text-center p-6 bg-gray-50 rounded-xl">
+                          <div className="text-5xl font-bold text-gray-900 mb-2">
                             {product.rating.toFixed(1)}
                           </div>
-                          <div className="flex justify-center my-2">
+                          <div className="flex justify-center mb-3">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star
                                 key={i}
-                                className={`h-5 w-5 ${
+                                className={`h-6 w-6 ${
                                   i < Math.floor(product.rating)
                                     ? "text-yellow-400 fill-yellow-400"
                                     : i < product.rating
@@ -545,16 +604,16 @@ export default function ProductDetailPage({ params }) {
                               />
                             ))}
                           </div>
-                          <div className="text-sm text-gray-500 ">
+                          <div className="text-sm text-gray-600 mb-4">
                             Berdasarkan {product.reviewCount} ulasan
                           </div>
-                        </div>
-                        <div className="mt-6">
-                          <Button className="w-full">Tulis Ulasan</Button>
+                          <Button className="w-full bg-gray-900 hover:bg-gray-800">
+                            Tulis Ulasan
+                          </Button>
                         </div>
                       </div>
                       <div className="md:w-2/3">
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                           {[5, 4, 3, 2, 1].map((star) => {
                             const percentage =
                               star === 5
@@ -567,17 +626,20 @@ export default function ProductDetailPage({ params }) {
                                 ? 2
                                 : 1;
                             return (
-                              <div key={star} className="flex items-center">
-                                <div className="w-12 text-sm text-gray-600 ">
+                              <div
+                                key={star}
+                                className="flex items-center gap-3"
+                              >
+                                <div className="w-16 text-sm text-gray-700 font-medium">
                                   {star} bintang
                                 </div>
-                                <div className="w-full h-2 mx-2 bg-gray-200 rounded-full">
+                                <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
                                   <div
-                                    className="h-2 bg-yellow-400 rounded-full"
+                                    className="h-full bg-yellow-400 rounded-full transition-all duration-500"
                                     style={{ width: `${percentage}%` }}
                                   ></div>
                                 </div>
-                                <div className="w-12 text-sm text-right text-gray-600 ">
+                                <div className="w-12 text-sm text-right text-gray-700 font-medium">
                                   {percentage}%
                                 </div>
                               </div>
@@ -587,29 +649,35 @@ export default function ProductDetailPage({ params }) {
                       </div>
                     </div>
 
-                    <Separator />
+                    <Separator className="my-8" />
 
                     {/* Reviews List */}
                     <div className="space-y-6">
+                      <h4 className="text-lg font-bold text-gray-900">
+                        Ulasan Pelanggan
+                      </h4>
                       {product.reviews.map((review) => (
-                        <div key={review.id} className="space-y-2">
-                          <div className="flex items-center justify-between">
+                        <div
+                          key={review.id}
+                          className="p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center">
-                              <Avatar className="h-10 w-10 mr-3">
+                              <Avatar className="h-12 w-12 mr-4 border-2 border-white shadow-md">
                                 <AvatarImage
                                   src={review.user.avatar || "/placeholder.svg"}
                                   alt={review.user.name}
                                 />
-                                <AvatarFallback>
+                                <AvatarFallback className="bg-gray-900 text-white font-semibold">
                                   {review.user.name.charAt(0)}
                                 </AvatarFallback>
                               </Avatar>
                               <div>
-                                <h4 className="font-medium">
+                                <h5 className="font-semibold text-gray-900">
                                   {review.user.name}
-                                </h4>
-                                <div className="flex items-center">
-                                  <div className="flex text-yellow-400">
+                                </h5>
+                                <div className="flex items-center mt-1">
+                                  <div className="flex text-yellow-400 mr-2">
                                     {Array.from({ length: 5 }).map((_, i) => (
                                       <Star
                                         key={i}
@@ -621,43 +689,49 @@ export default function ProductDetailPage({ params }) {
                                       />
                                     ))}
                                   </div>
-                                  <span className="ml-2 text-sm text-gray-500 ">
+                                  <span className="text-sm text-gray-600">
                                     {review.date}
                                   </span>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div>
-                            <h5 className="font-medium">{review.title}</h5>
-                            <p className="text-gray-600  mt-1">
+                          <div className="mb-4">
+                            <h6 className="font-semibold text-gray-900 mb-2">
+                              {review.title}
+                            </h6>
+                            <p className="text-gray-700 leading-relaxed">
                               {review.content}
                             </p>
                           </div>
-                          <div className="flex items-center gap-4 pt-2">
+                          <div className="flex items-center gap-4">
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 px-3"
+                              className="text-gray-600 hover:text-gray-900 hover:bg-gray-200"
                             >
-                              Membantu (12)
+                              👍 Membantu (12)
                             </Button>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 px-3"
+                              className="text-gray-600 hover:text-gray-900 hover:bg-gray-200"
                             >
-                              Laporkan
+                              🚩 Laporkan
                             </Button>
                           </div>
-                          <Separator className="mt-4" />
                         </div>
                       ))}
                     </div>
 
-                    <Button variant="outline" className="w-full">
-                      Muat Lebih Banyak Ulasan
-                    </Button>
+                    <div className="text-center pt-6">
+                      <Button
+                        variant="outline"
+                        className="border-gray-300 hover:bg-gray-50"
+                      >
+                        Muat Lebih Banyak Ulasan
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </TabsContent>
@@ -668,13 +742,15 @@ export default function ProductDetailPage({ params }) {
         {/* Related Products */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8">Anda Mungkin Juga Suka</h2>
+            <h2 className="text-2xl font-bold mb-8 text-gray-900">
+              Anda Mungkin Juga Suka
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map((relatedProduct) => (
                 <Link
                   key={relatedProduct.id}
                   href={`/products/${relatedProduct.id}`}
-                  className="group bg-white  rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
+                  className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full border border-gray-200"
                 >
                   <div className="relative h-48 overflow-hidden">
                     <Image
@@ -701,11 +777,11 @@ export default function ProductDetailPage({ params }) {
                         ))}
                       </div>
                     </div>
-                    <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold mb-1 group-hover:text-gray-900 transition-colors text-gray-800">
                       {relatedProduct.name}
                     </h3>
                     <div className="mt-auto pt-2">
-                      <span className="font-bold">
+                      <span className="font-bold text-gray-900">
                         {formatPrice(relatedProduct.price)}
                       </span>
                     </div>
@@ -719,7 +795,9 @@ export default function ProductDetailPage({ params }) {
         {/* Recently Viewed */}
         <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8">Baru Dilihat</h2>
+            <h2 className="text-2xl font-bold mb-8 text-gray-900">
+              Baru Dilihat
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts
                 .slice(0, 4)
@@ -728,7 +806,7 @@ export default function ProductDetailPage({ params }) {
                   <Link
                     key={relatedProduct.id}
                     href={`/products/${relatedProduct.id}`}
-                    className="group bg-white  rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full"
+                    className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full border border-gray-200"
                   >
                     <div className="relative h-48 overflow-hidden">
                       <Image
@@ -739,11 +817,11 @@ export default function ProductDetailPage({ params }) {
                       />
                     </div>
                     <div className="p-4 flex flex-col flex-grow">
-                      <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
+                      <h3 className="font-semibold mb-1 group-hover:text-gray-900 transition-colors text-gray-800">
                         {relatedProduct.name}
                       </h3>
                       <div className="mt-auto pt-2">
-                        <span className="font-bold">
+                        <span className="font-bold text-gray-900">
                           {formatPrice(relatedProduct.price)}
                         </span>
                       </div>
