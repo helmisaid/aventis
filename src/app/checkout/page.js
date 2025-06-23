@@ -111,25 +111,25 @@ export default function CheckoutPage() {
       value: "bca",
       name: "Bank BCA",
       account: "1234567890",
-      logo: "/placeholder.svg?height=30&width=60&text=BCA",
+      logo: "/bca.png",
     },
     {
       value: "mandiri",
       name: "Bank Mandiri",
       account: "0987654321",
-      logo: "/placeholder.svg?height=30&width=60&text=Mandiri",
+      logo: "/mandiri.webp",
     },
     {
       value: "bni",
       name: "Bank BNI",
       account: "1122334455",
-      logo: "/placeholder.svg?height=30&width=60&text=BNI",
+      logo: "/bni.webp",
     },
     {
       value: "bri",
       name: "Bank BRI",
       account: "5566778899",
-      logo: "/placeholder.svg?height=30&width=60&text=BRI",
+      logo: "/bri.png",
     },
   ];
 
@@ -137,22 +137,22 @@ export default function CheckoutPage() {
     {
       value: "gopay",
       name: "GoPay",
-      logo: "/placeholder.svg?height=30&width=60&text=GoPay",
+      logo: "/gopay.png",
     },
     {
       value: "ovo",
       name: "OVO",
-      logo: "/placeholder.svg?height=30&width=60&text=OVO",
+      logo: "/ovo.png",
     },
     {
       value: "dana",
       name: "DANA",
-      logo: "/placeholder.svg?height=30&width=60&text=DANA",
+      logo: "/dana.webp",
     },
     {
       value: "shopeepay",
       name: "ShopeePay",
-      logo: "/placeholder.svg?height=30&width=60&text=ShopeePay",
+      logo: "/spay.png",
     },
   ];
 

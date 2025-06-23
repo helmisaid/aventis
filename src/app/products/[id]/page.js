@@ -448,91 +448,93 @@ export default function ProductDetailPage({ params }) {
         <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
             <Tabs defaultValue="description" className="w-full">
-              <TabsList className="w-full justify-start mb-8 bg-white border border-gray-200 rounded-lg p-1 h-auto shadow-sm">
-                <TabsTrigger
-                  value="description"
-                  className="flex-1 rounded-md py-3 px-6 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100"
-                >
-                  <Info className="h-4 w-4 mr-2" />
-                  Deskripsi
-                </TabsTrigger>
-                <TabsTrigger
-                  value="features"
-                  className="flex-1 rounded-md py-3 px-6 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100"
-                >
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Fitur
-                </TabsTrigger>
-                <TabsTrigger
-                  value="specifications"
-                  className="flex-1 rounded-md py-3 px-6 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100"
-                >
-                  <Award className="h-4 w-4 mr-2" />
-                  Spesifikasi
-                </TabsTrigger>
-                <TabsTrigger
-                  value="reviews"
-                  className="flex-1 rounded-md py-3 px-6 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100"
-                  id="reviews"
-                >
-                  <Star className="h-4 w-4 mr-2" />
-                  Ulasan ({product.reviewCount})
-                </TabsTrigger>
+              <TabsList className="w-full mb-8 bg-white border border-gray-200 rounded-lg p-1 h-auto shadow-sm overflow-x-auto">
+                <div className="flex min-w-max md:grid md:grid-cols-4 gap-1">
+                  <TabsTrigger
+                    value="description"
+                    className="flex-shrink-0 min-w-[120px] md:min-w-0 rounded-md py-3 px-4 md:px-6 text-xs md:text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100 whitespace-nowrap"
+                  >
+                    <Info className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Deskripsi
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="features"
+                    className="flex-shrink-0 min-w-[120px] md:min-w-0 rounded-md py-3 px-4 md:px-6 text-xs md:text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100 whitespace-nowrap"
+                  >
+                    <CheckCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Fitur
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="specifications"
+                    className="flex-shrink-0 min-w-[120px] md:min-w-0 rounded-md py-3 px-4 md:px-6 text-xs md:text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100 whitespace-nowrap"
+                  >
+                    <Award className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    Spesifikasi
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="reviews"
+                    className="flex-shrink-0 min-w-[120px] md:min-w-0 rounded-md py-3 px-4 md:px-6 text-xs md:text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-900 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-gray-100 whitespace-nowrap"
+                    id="reviews"
+                  >
+                    <Star className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">
+                      Ulasan ({product.reviewCount})
+                    </span>
+                    <span className="sm:hidden">Ulasan</span>
+                  </TabsTrigger>
+                </div>
               </TabsList>
 
               <TabsContent value="description" className="mt-0">
-                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-                  <div className="prose max-w-none">
-                    <div className="mb-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-4">
-                        Tentang Produk Ini
-                      </h3>
-                      <div className="h-1 w-20 bg-gray-900 rounded-full mb-6"></div>
-                    </div>
-                    <div className="space-y-4 text-gray-700 leading-relaxed">
-                      <p>
-                        The Aventis Hiking Backpack 45L is designed for serious
-                        hikers and backpackers who demand reliability, comfort,
-                        and organization from their gear. Whether youre planning
-                        a weekend trek or a more extended adventure, this pack
-                        offers the perfect balance of capacity, durability, and
-                        features.
-                      </p>
-                      <p>
-                        Crafted from high-quality ripstop nylon, this backpack
-                        is built to withstand the rigors of the trail while
-                        keeping your gear protected from the elements. The
-                        integrated rain cover provides additional protection
-                        during unexpected downpours.
-                      </p>
-                      <p>
-                        Comfort is paramount during long days on the trail,
-                        which is why weve equipped this pack with an adjustable
-                        suspension system that can be customized to your torso
-                        length. The padded shoulder straps and hip belt
-                        distribute weight evenly, reducing fatigue and
-                        preventing hot spots.
-                      </p>
-                      <p>
-                        Organization is thoughtfully designed with multiple
-                        access points to the main compartment, allowing you to
-                        reach items without unpacking everything. External
-                        attachment points accommodate trekking poles, ice axes,
-                        or other gear, while the hydration reservoir
-                        compatibility keeps you refreshed on the move.
-                      </p>
-                    </div>
+                <div className="bg-white rounded-xl p-4 md:p-8 shadow-sm border border-gray-200">
+                  <div className="mb-4 md:mb-6">
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">
+                      Tentang Produk Ini
+                    </h3>
+                    <div className="h-1 w-20 bg-gray-900 rounded-full mb-4 md:mb-6"></div>
+                  </div>
+                  <div className="space-y-3 md:space-y-4 text-gray-700 leading-relaxed text-sm md:text-base">
+                    <p>
+                      The Aventis Hiking Backpack 45L is designed for serious
+                      hikers and backpackers who demand reliability, comfort,
+                      and organization from their gear. Whether youre planning a
+                      weekend trek or a more extended adventure, this pack
+                      offers the perfect balance of capacity, durability, and
+                      features.
+                    </p>
+                    <p>
+                      Crafted from high-quality ripstop nylon, this backpack is
+                      built to withstand the rigors of the trail while keeping
+                      your gear protected from the elements. The integrated rain
+                      cover provides additional protection during unexpected
+                      downpours.
+                    </p>
+                    <p>
+                      Comfort is paramount during long days on the trail, which
+                      is why weve equipped this pack with an adjustable
+                      suspension system that can be customized to your torso
+                      length. The padded shoulder straps and hip belt distribute
+                      weight evenly, reducing fatigue and preventing hot spots.
+                    </p>
+                    <p>
+                      Organization is thoughtfully designed with multiple access
+                      points to the main compartment, allowing you to reach
+                      items without unpacking everything. External attachment
+                      points accommodate trekking poles, ice axes, or other
+                      gear, while the hydration reservoir compatibility keeps
+                      you refreshed on the move.
+                    </p>
                   </div>
                 </div>
               </TabsContent>
 
               <TabsContent value="features" className="mt-0">
-                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-                  <div className="mb-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">
+                <div className="bg-white rounded-xl p-4 md:p-8 shadow-sm border border-gray-200">
+                  <div className="mb-4 md:mb-6">
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">
                       Fitur Unggulan
                     </h3>
-                    <div className="h-1 w-20 bg-gray-900 rounded-full mb-6"></div>
+                    <div className="h-1 w-20 bg-gray-900 rounded-full mb-4 md:mb-6"></div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {product.features.map((feature, index) => (
@@ -553,12 +555,12 @@ export default function ProductDetailPage({ params }) {
               </TabsContent>
 
               <TabsContent value="specifications" className="mt-0">
-                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-                  <div className="mb-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">
+                <div className="bg-white rounded-xl p-4 md:p-8 shadow-sm border border-gray-200">
+                  <div className="mb-4 md:mb-6">
+                    <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">
                       Spesifikasi Teknis
                     </h3>
-                    <div className="h-1 w-20 bg-gray-900 rounded-full mb-6"></div>
+                    <div className="h-1 w-20 bg-gray-900 rounded-full mb-4 md:mb-6"></div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {Object.entries(product.specifications).map(
@@ -581,7 +583,7 @@ export default function ProductDetailPage({ params }) {
               </TabsContent>
 
               <TabsContent value="reviews" className="mt-0">
-                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+                <div className="bg-white rounded-xl p-4 md:p-8 shadow-sm border border-gray-200">
                   <div className="space-y-8">
                     {/* Review Summary */}
                     <div className="flex flex-col md:flex-row gap-8">
@@ -820,11 +822,6 @@ export default function ProductDetailPage({ params }) {
                       <h3 className="font-semibold mb-1 group-hover:text-gray-900 transition-colors text-gray-800">
                         {relatedProduct.name}
                       </h3>
-                      <div className="mt-auto pt-2">
-                        <span className="font-bold text-gray-900">
-                          {formatPrice(relatedProduct.price)}
-                        </span>
-                      </div>
                     </div>
                   </Link>
                 ))}
