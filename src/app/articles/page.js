@@ -1,15 +1,22 @@
-import { Suspense } from "react";
+"use client";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Calendar, Clock, Search, Tag } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  Clock,
+  Search,
+  Tag,
+  Mountain,
+  Tent,
+  Zap,
+  Backpack,
+  Shield,
+  Star,
+} from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../components/ui/tabs";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import ArticleCard from "../../components/articles/article-card";
@@ -17,13 +24,13 @@ import ArticleCardSkeleton from "../../components/articles/article-card-skeleton
 import Pagination from "../../components/Pagination";
 
 const categories = [
-  "Semua",
-  "Pendakian",
-  "Camping",
-  "Panjat Tebing",
-  "Backpacking",
-  "Survival",
-  "Review Alat",
+  { name: "Semua", icon: Tag },
+  { name: "Pendakian", icon: Mountain },
+  { name: "Camping", icon: Tent },
+  { name: "Panjat Tebing", icon: Zap },
+  { name: "Backpacking", icon: Backpack },
+  { name: "Survival", icon: Shield },
+  { name: "Review Alat", icon: Star },
 ];
 
 const featuredArticle = {
@@ -31,15 +38,13 @@ const featuredArticle = {
   title: "Pilih Carrier yang Tepat untuk Pendakian di 2025",
   excerpt:
     "Carrier adalah sahabat pendaki sejati! Yuk, kenali teknologi carrier terbaru di 2025 yang ringan, tahan air, dan bikin pundakmu nyaman meski bawa beban berat.",
-  image:
-    "/images/article/kerir.jpg",
+  image: "/images/article/kerir.jpg",
   category: "Pendakian",
   date: "13 Mei 2025",
   readTime: "7 menit baca",
   author: {
     name: "Helmi Said",
-    avatar:
-      "/images/article/helmi_avatar.jpg",
+    avatar: "/images/article/helmi_avatar.jpg",
   },
 };
 
@@ -49,15 +54,13 @@ const articles = [
     title: "Gunung Rinjani: Destinasi Pendakian Wajib di 2025",
     excerpt:
       "Rinjani lagi hits banget! Simak tips pendakian, rute terbaik, dan alat wajib bawa biar petualanganmu ke puncak aman dan seru.",
-    image:
-      "/images/article/rinjani.jpg",
+    image: "/images/article/rinjani.jpg",
     category: "Pendakian",
     date: "10 Mei 2025",
     readTime: "6 menit baca",
     author: {
       name: "Helmi Said",
-      avatar:
-        "/images/article/helmi_avatar.jpg",
+      avatar: "/images/article/helmi_avatar.jpg",
     },
   },
   {
@@ -65,8 +68,7 @@ const articles = [
     title: "Review Sepatu Pendakian Terbaru: Tahan Banting & Anti Slip",
     excerpt:
       "Cari sepatu pendakian yang kuat di medan berbatu? Kami ulas 3 model sepatu terbaru di Aventis yang bikin langkahmu percaya diri!",
-    image:
-      "/images/article/sepatu_daki.jpg",
+    image: "/images/article/sepatu_daki.jpg",
     category: "Review Alat",
     date: "8 Mei 2025",
     readTime: "5 menit baca",
@@ -81,15 +83,13 @@ const articles = [
     title: "Tips Camping di Gunung Bromo Biar Gak Kedinginan",
     excerpt:
       "Camping di Bromo itu seru, tapi dinginnya nampol! Ini tips pilih sleeping bag dan tenda yang cocok dari koleksi Aventis Adventure.",
-    image:
-      "/images/article/bromo.jpg",
+    image: "/images/article/bromo.jpg",
     category: "Camping",
     date: "7 Mei 2025",
     readTime: "6 menit baca",
     author: {
       name: "Helmi Said",
-      avatar:
-        "/images/article/helmi_avatar.jpg",
+      avatar: "/images/article/helmi_avatar.jpg",
     },
   },
   {
@@ -97,8 +97,7 @@ const articles = [
     title: "Tren Jaket Windproof untuk Pendakian Musim Hujan",
     excerpt:
       "Musim hujan gak bikin pendakian batal! Cek rekomendasi jaket windproof terbaru yang ringan dan tahan air dari Aventis.",
-    image:
-      "/images/article/jaket_windproof.jpg",
+    image: "/images/article/jaket_windproof.jpg",
     category: "Review Alat",
     date: "6 Mei 2025",
     readTime: "4 menit baca",
@@ -113,15 +112,13 @@ const articles = [
     title: "Pendakian Gunung Semeru: Persiapan & Alat yang Dibutuhkan",
     excerpt:
       "Semeru selalu jadi impian pendaki! Simak checklist alat pendakian dan tips biar pendakianmu lancar jaya.",
-    image:
-      "/images/article/semeru.jpg",
+    image: "/images/article/semeru.jpg",
     category: "Pendakian",
     date: "5 Mei 2025",
     readTime: "8 menit baca",
     author: {
       name: "Helmi Said",
-      avatar:
-        "/images/article/helmi_avatar.jpg",
+      avatar: "/images/article/helmi_avatar.jpg",
     },
   },
   {
@@ -129,8 +126,7 @@ const articles = [
     title: "Cara Pilih Kompor Camping yang Praktis & Aman",
     excerpt:
       "Mau masak di puncak tanpa ribet? Kami review kompor camping portabel terbaik di Aventis yang hemat bahan bakar.",
-    image:
-      "/images/article/kompor.jpg",
+    image: "/images/article/kompor.jpg",
     category: "Review Alat",
     date: "4 Mei 2025",
     readTime: "5 menit baca",
@@ -145,15 +141,13 @@ const articles = [
     title: "Backpacking ke Gunung Prau: Budget & Perlengkapan",
     excerpt:
       "Gunung Prau cocok buat pemula! Ini panduan backpacking hemat plus rekomendasi alat outdoor dari Aventis Adventure.",
-    image:
-      "/images/article/prau.jpg",
+    image: "/images/article/prau.jpg",
     category: "Backpacking",
     date: "3 Mei 2025",
     readTime: "7 menit baca",
     author: {
       name: "Helmi Said",
-      avatar:
-        "/images/article/helmi_avatar.jpg",
+      avatar: "/images/article/helmi_avatar.jpg",
     },
   },
   {
@@ -161,8 +155,7 @@ const articles = [
     title: "Teknik Survival di Hutan untuk Pendaki Pemula",
     excerpt:
       "Tersesat di hutan? Jangan panik! Pelajari teknik survival dasar dan alat wajib bawa dari Aventis biar aman.",
-    image:
-      "/images/article/survival.jpg",
+    image: "/images/article/survival.jpg",
     category: "Survival",
     date: "2 Mei 2025",
     readTime: "6 menit baca",
@@ -177,20 +170,25 @@ const articles = [
     title: "Panduan Panjat Tebing di Labuan Bajo",
     excerpt:
       "Panjat tebing di Labuan Bajo lagi ngetren! Simak rute populer dan alat panjat rekomendasi dari Aventis Adventure.",
-    image:
-      "/images/article/panjat_tebing.jpg",
+    image: "/images/article/panjat_tebing.jpg",
     category: "Panjat Tebing",
     date: "1 Mei 2025",
     readTime: "5 menit baca",
     author: {
       name: "Helmi Said",
-      avatar:
-        "/images/article/helmi_avatar.jpg",
+      avatar: "/images/article/helmi_avatar.jpg",
     },
   },
 ];
 
 export default function ArticlesPage() {
+  const [selectedCategory, setSelectedCategory] = useState("Semua");
+
+  const filteredArticles = articles.filter(
+    (article) =>
+      selectedCategory === "Semua" || article.category === selectedCategory
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -287,70 +285,181 @@ export default function ArticlesPage() {
         {/* Articles List */}
         <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
-            <Tabs defaultValue="Semua" className="mb-8">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Artikel Terbaru</h2>
-                <TabsList className="bg-white">
-                  {categories.slice(0, 5).map((category) => (
-                    <TabsTrigger
-                      key={category}
-                      value={category}
-                      className="text-sm"
-                    >
-                      {category}
-                    </TabsTrigger>
-                  ))}
-                  <TabsTrigger value="Lainnya" className="text-sm">
-                    Lainnya
-                  </TabsTrigger>
-                </TabsList>
+            {/* Header with Category Navigation */}
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-8 gap-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  Artikel Terbaru
+                </h2>
+                <p className="text-gray-600">
+                  {selectedCategory === "Semua"
+                    ? `Menampilkan ${filteredArticles.length} artikel dari semua kategori`
+                    : `Kategori ${selectedCategory} - ${filteredArticles.length} artikel`}
+                </p>
+              </div>
+            </div>
+
+            {/* Category Navigation */}
+            <div className="mb-8">
+              {/* Desktop Navigation */}
+              <div className="hidden md:block">
+                <nav className="flex flex-wrap items-center gap-8">
+                  {categories.map((category) => {
+                    const Icon = category.icon;
+                    const isActive = selectedCategory === category.name;
+                    const articleCount =
+                      category.name === "Semua"
+                        ? articles.length
+                        : articles.filter(
+                            (article) => article.category === category.name
+                          ).length;
+
+                    return (
+                      <button
+                        key={category.name}
+                        onClick={() => setSelectedCategory(category.name)}
+                        className={`
+                          group flex items-center gap-2 py-2 text-sm font-medium transition-all duration-200 relative
+                          ${
+                            isActive
+                              ? "text-gray-900"
+                              : "text-gray-600 hover:text-gray-900"
+                          }
+                        `}
+                      >
+                        <Icon
+                          className={`h-4 w-4 transition-colors ${
+                            isActive
+                              ? "text-gray-900"
+                              : "text-gray-500 group-hover:text-gray-700"
+                          }`}
+                        />
+                        <span>{category.name}</span>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full transition-colors ${
+                            isActive
+                              ? "bg-gray-900 text-white"
+                              : "bg-gray-200 text-gray-600 group-hover:bg-gray-300"
+                          }`}
+                        >
+                          {articleCount}
+                        </span>
+
+                        {/* Active indicator */}
+                        <div
+                          className={`
+                          absolute -bottom-2 left-0 right-0 h-0.5 bg-gray-900 transition-all duration-200
+                          ${
+                            isActive
+                              ? "opacity-100"
+                              : "opacity-0 group-hover:opacity-50"
+                          }
+                        `}
+                        />
+                      </button>
+                    );
+                  })}
+                </nav>
               </div>
 
-              {categories.map((category) => (
-                <TabsContent key={category} value={category} className="mt-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <Suspense
-                      fallback={Array.from({ length: 9 }).map((_, i) => (
-                        <ArticleCardSkeleton key={i} />
-                      ))}
-                    >
-                      {articles
-                        .filter(
-                          (article) =>
-                            category === "Semua" ||
-                            article.category === category
-                        )
-                        .map((article) => (
-                          <ArticleCard key={article.id} article={article} />
-                        ))}
-                    </Suspense>
-                  </div>
-                </TabsContent>
-              ))}
+              {/* Mobile Navigation */}
+              <div className="md:hidden">
+                <div className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide">
+                  {categories.map((category) => {
+                    const Icon = category.icon;
+                    const isActive = selectedCategory === category.name;
+                    const articleCount =
+                      category.name === "Semua"
+                        ? articles.length
+                        : articles.filter(
+                            (article) => article.category === category.name
+                          ).length;
 
-              <TabsContent value="Lainnya" className="mt-0">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {categories.slice(5).map((category) => (
-                    <Link
-                      key={category}
-                      href={`/articles?category=${category}`}
-                      className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center justify-between"
-                    >
-                      <div className="flex items-center">
-                        <Tag className="h-5 w-5 mr-2 text-primary" />
-                        <span className="font-medium">{category}</span>
-                      </div>
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  ))}
+                    return (
+                      <button
+                        key={category.name}
+                        onClick={() => setSelectedCategory(category.name)}
+                        className={`
+                          flex items-center gap-2 py-2 text-sm font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 relative
+                          ${isActive ? "text-gray-900" : "text-gray-600"}
+                        `}
+                      >
+                        <Icon
+                          className={`h-4 w-4 ${
+                            isActive ? "text-gray-900" : "text-gray-500"
+                          }`}
+                        />
+                        <span>{category.name}</span>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            isActive
+                              ? "bg-gray-900 text-white"
+                              : "bg-gray-200 text-gray-600"
+                          }`}
+                        >
+                          {articleCount}
+                        </span>
+
+                        {/* Active indicator */}
+                        <div
+                          className={`
+                          absolute -bottom-2 left-0 right-0 h-0.5 bg-gray-900 transition-all duration-200
+                          ${isActive ? "opacity-100" : "opacity-0"}
+                        `}
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
-              </TabsContent>
-            </Tabs>
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  ← Geser untuk melihat kategori lainnya →
+                </p>
+              </div>
+
+              {/* Separator Line */}
+              <div className="mt-6 border-b border-gray-200"></div>
+            </div>
+
+            {/* Articles Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <Suspense
+                fallback={Array.from({ length: 9 }).map((_, i) => (
+                  <ArticleCardSkeleton key={i} />
+                ))}
+              >
+                {filteredArticles.map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </Suspense>
+            </div>
+
+            {/* Empty State */}
+            {filteredArticles.length === 0 && (
+              <div className="text-center py-12">
+                <div className="max-w-md mx-auto">
+                  <div className="text-gray-400 mb-4">
+                    <Tag className="h-12 w-12 mx-auto" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Belum Ada Artikel
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Belum ada artikel untuk kategori {selectedCategory}. Coba
+                    pilih kategori lain.
+                  </p>
+                  <button
+                    onClick={() => setSelectedCategory("Semua")}
+                    className="text-gray-900 hover:text-gray-700 font-medium underline underline-offset-4"
+                  >
+                    Lihat Semua Artikel
+                  </button>
+                </div>
+              </div>
+            )}
 
             <Pagination totalPages={5} currentPage={1} />
           </div>
         </section>
-
       </main>
       <Footer />
     </div>

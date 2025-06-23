@@ -1,73 +1,111 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { ShoppingCart, Star, Heart } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import Image from "next/image";
+import { ShoppingCart, Star, Heart, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-export default function ProductGridCard({ product, formatPrice }) {
+// Format price to IDR
+const formatPrice = (price) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+};
+
+export default function ProductGridCard({ product }) {
   const handleAddToCart = (e) => {
-    e.preventDefault() // Prevent navigation when clicking the cart button
-    // Add to cart logic here
-    console.log("Adding to cart:", product.name)
-  }
+    e.preventDefault();
+    console.log("Menambahkan ke keranjang:", product.name);
+  };
 
   const handleWishlist = (e) => {
-    e.preventDefault() // Prevent navigation when clicking the wishlist button
-    // Add to wishlist logic here
-    console.log("Adding to wishlist:", product.name)
-  }
+    e.preventDefault();
+    console.log("Menambahkan ke wishlist:", product.name);
+  };
+
+  const handleQuickView = (e) => {
+    e.preventDefault();
+    console.log("Lihat cepat:", product.name);
+  };
 
   return (
-    <Link
-      href={`/products/${product.id || 2}`}
-      className="group bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md flex flex-col h-full"
-    >
-      <div className="relative h-48 sm:h-56 overflow-hidden">
+    <div className="group bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-lg hover:border-gray-200 flex flex-col h-full">
+      {/* Product Image */}
+      <div className="relative h-48 sm:h-56 overflow-hidden bg-gray-50">
         <Image
-          src={product.image || "/placeholder.svg"}
+          src={product.image || "/placeholder.svg?height=224&width=224"}
           alt={product.name}
           fill
-          className="object-cover"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
+
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {product.discount > 0 && (
-            <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-{product.discount}%</div>
+            <Badge className="bg-red-500 text-white text-xs font-semibold px-2 py-1">
+              -{product.discount}%
+            </Badge>
           )}
-        </div>
-        <div className="absolute top-2 right-2 flex flex-col gap-1">
-          {product.isNew && <div className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">New</div>}
+          {product.isNew && (
+            <Badge className="bg-green-500 text-white text-xs font-semibold px-2 py-1">
+              Baru
+            </Badge>
+          )}
           {product.isBestSeller && (
-            <div className="bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded-full">Best Seller</div>
+            <Badge className="bg-amber-500 text-white text-xs font-semibold px-2 py-1">
+              Terlaris
+            </Badge>
           )}
         </div>
 
-        {/* Action buttons - only show on hover */}
-        <div className="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* Action buttons */}
+        <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
           <Button
             size="icon"
             variant="secondary"
-            className="h-8 w-8 rounded-full bg-white hover:bg-gray-100 text-gray-700"
+            className="h-8 w-8 rounded-full bg-white/90 hover:bg-white shadow-md"
             onClick={handleWishlist}
+            title="Tambah ke Wishlist"
           >
-            <Heart className="h-4 w-4" />
+            <Heart className="h-4 w-4 text-gray-700" />
           </Button>
           <Button
             size="icon"
-            className="h-8 w-8 rounded-full bg-primary hover:bg-primary/90 text-white"
+            variant="secondary"
+            className="h-8 w-8 rounded-full bg-white/90 hover:bg-white shadow-md"
+            onClick={handleQuickView}
+            title="Lihat Cepat"
+          >
+            <Eye className="h-4 w-4 text-gray-700" />
+          </Button>
+        </div>
+
+        {/* Quick Add Button */}
+        <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <Button
+            size="sm"
+            className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-lg"
             onClick={handleAddToCart}
           >
-            <ShoppingCart className="h-4 w-4" />
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            Tambah ke Keranjang
           </Button>
         </div>
       </div>
 
-      <div className="p-4 flex flex-col flex-grow">
+      {/* Product Info */}
+      <Link
+        href={`/products/${product.id || 2}`}
+        className="p-4 flex flex-col flex-grow hover:bg-gray-50/50 transition-colors"
+      >
         {/* Ratings */}
         <div className="flex items-center mb-2">
-          <div className="flex text-yellow-400">
+          <div className="flex text-amber-400">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
                 key={i}
@@ -75,21 +113,27 @@ export default function ProductGridCard({ product, formatPrice }) {
                   i < Math.floor(product.rating)
                     ? "fill-current"
                     : i < product.rating
-                      ? "fill-current opacity-50"
-                      : "text-gray-300"
+                    ? "fill-current opacity-50"
+                    : "text-gray-300"
                 }`}
               />
             ))}
           </div>
-          <span className="text-xs text-gray-500 ml-2">({product.reviewCount})</span>
+          <span className="text-xs text-gray-500 ml-2">
+            ({product.reviewCount || 0})
+          </span>
         </div>
 
-        {/* Product info */}
-        <h3 className="font-medium text-sm mb-1 group-hover:text-primary transition-colors line-clamp-2">
+        {/* Product name */}
+        <h3 className="font-semibold text-sm mb-1 group-hover:text-slate-700 transition-colors line-clamp-2 text-slate-900">
           {product.name}
         </h3>
+
+        {/* Brand & Category */}
         <div className="flex items-center mb-2">
-          <span className="text-xs text-gray-500">{product.brand}</span>
+          <span className="text-xs text-gray-500">
+            {product.brand || "Aventis"}
+          </span>
           {product.category && (
             <>
               <span className="mx-1 text-gray-300">•</span>
@@ -102,16 +146,31 @@ export default function ProductGridCard({ product, formatPrice }) {
         <div className="mt-auto pt-2">
           {product.discount > 0 ? (
             <div className="flex flex-col">
-              <span className="font-bold text-sm">{formatPrice ? formatPrice(product.price) : product.price}</span>
+              <span className="font-bold text-sm text-slate-900">
+                {formatPrice(product.price)}
+              </span>
               <span className="text-xs text-gray-500 line-through">
-                {formatPrice ? formatPrice(product.originalPrice) : product.originalPrice}
+                {formatPrice(product.originalPrice || product.price * 1.2)}
               </span>
             </div>
           ) : (
-            <span className="font-bold text-sm">{formatPrice ? formatPrice(product.price) : product.price}</span>
+            <span className="font-bold text-sm text-slate-900">
+              {formatPrice(product.price)}
+            </span>
           )}
+
+          {/* Stock indicator */}
+          <div className="mt-1">
+            {(product.stock || 10) > 0 ? (
+              <span className="text-xs text-green-600 font-medium">
+                Tersedia
+              </span>
+            ) : (
+              <span className="text-xs text-red-600 font-medium">Habis</span>
+            )}
+          </div>
         </div>
-      </div>
-    </Link>
-  )
+      </Link>
+    </div>
+  );
 }

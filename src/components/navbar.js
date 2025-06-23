@@ -10,18 +10,18 @@ import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 
 const navLinks = [
-  { name: "Products", href: "/products" },
-  { name: "Articles", href: "/articles" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
+  { name: "Produk", href: "/products" },
+  { name: "Artikel", href: "/articles" },
+  { name: "Tentang Kami", href: "/about" },
+  { name: "Kontak", href: "/contact" },
 ]
 
 // Sample announcements for the ticker
 const announcements = [
-  "Free shipping on orders over $50",
-  "New summer collection available now",
-  "Limited time offer: 20% off all accessories",
-  "Join our loyalty program and earn rewards",
+  "Gratis ongkos kirim untuk pesanan di atas Rp750.000",
+  "Koleksi musim panas terbaru sudah tersedia",
+  "Penawaran terbatas: Diskon 20% untuk semua aksesori",
+  "Gabung program loyalitas kami dan dapatkan hadiah",
 ]
 
 export default function Navbar() {
@@ -110,7 +110,7 @@ export default function Navbar() {
           <div className="py-4 border-t border-gray-200">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <Input type="search" placeholder="Search for products..." className="pl-10 w-full" autoFocus />
+              <Input type="search" placeholder="Cari produk..." className="pl-10 w-full" autoFocus />
               <button onClick={toggleSearch} className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <X className="h-4 w-4 text-gray-500" />
               </button>
@@ -119,18 +119,20 @@ export default function Navbar() {
         )}
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - SIMPLIFIED ACTIVE STATE */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-800">
-          <div className="container mx-auto px-4 py-4 space-y-4">
-            <nav className="flex flex-col space-y-4">
+        <div className="md:hidden bg-white border-t border-gray-200">
+          <div className="container mx-auto px-4 py-4 space-y-2">
+            <nav className="flex flex-col space-y-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "text-sm font-medium transition-colors nav-link relative",
-                    pathname === link.href ? "text-primary nav-link-active" : "text-gray-700 hover:text-primary",
+                    "px-4 py-3 text-base transition-colors rounded-lg",
+                    pathname === link.href
+                      ? "text-primary font-bold"
+                      : "text-gray-700 font-medium hover:text-primary hover:bg-gray-50",
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -138,15 +140,34 @@ export default function Navbar() {
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center space-x-4 pt-4 border-t border-gray-800">
-              <button onClick={toggleSearch} className="p-2 rounded-full hover:bg-gray-100">
-                <Search className="h-5 w-5" />
+
+            {/* Mobile Actions */}
+            <div className="flex items-center justify-around pt-4 mt-4 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  toggleSearch()
+                  setIsMenuOpen(false)
+                }}
+                className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <Search className="h-5 w-5 text-gray-600 mb-1" />
+                <span className="text-xs text-gray-600">Cari</span>
               </button>
-              <Link href="/wishlist" className="p-2 rounded-full hover:bg-gray-100">
-                <Heart className="h-5 w-5" />
+              <Link
+                href="/wishlist"
+                className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Heart className="h-5 w-5 text-gray-600 mb-1" />
+                <span className="text-xs text-gray-600">Wishlist</span>
               </Link>
-              <Link href="/account" className="p-2 rounded-full hover:bg-gray-100">
-                <User className="h-5 w-5" />
+              <Link
+                href="/account"
+                className="flex flex-col items-center p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <User className="h-5 w-5 text-gray-600 mb-1" />
+                <span className="text-xs text-gray-600">Akun</span>
               </Link>
             </div>
           </div>
