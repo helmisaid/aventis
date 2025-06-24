@@ -128,15 +128,6 @@ export default function Footer() {
                   Kontak
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/faq"
-                  className="text-slate-600 hover:text-slate-900 transition-colors duration-300 flex items-center group"
-                >
-                  <span className="w-2 h-2 bg-slate-400 rounded-full mr-3 group-hover:bg-slate-900 transition-colors duration-300"></span>
-                  Tanya Jawab
-                </Link>
-              </li>
             </ul>
           </div>
 

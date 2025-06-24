@@ -34,7 +34,7 @@ export default function AccountPage() {
       title: "Wishlist",
       description: "Lihat barang yang Anda simpan",
       icon: Heart,
-      href: "/account/wishlist",
+      href: "/wishlist",
     },
   ]
 

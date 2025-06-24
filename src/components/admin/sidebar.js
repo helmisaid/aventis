@@ -32,7 +32,6 @@ const navItems = [
     submenu: [
       { title: "Semua Artikel", href: "/admin/articles" },
       { title: "Tambah Artikel", href: "/admin/articles/create" },
-      { title: "Kategori Artikel", href: "/admin/articles/categories" },
     ],
   },
   {
@@ -42,7 +41,6 @@ const navItems = [
     submenu: [
       { title: "Semua Produk", href: "/admin/products" },
       { title: "Tambah Produk", href: "/admin/products/create" },
-      { title: "Kategori Produk", href: "/admin/categories" },
     ],
   },
   {
