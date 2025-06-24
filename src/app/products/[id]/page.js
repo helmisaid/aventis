@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { use } from "react";
+import React, { useState, useEffect, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -43,6 +42,7 @@ export default function ProductDetailPage({ params }) {
   const [mainImage, setMainImage] = useState("");
   const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [showCartNotification, setShowCartNotification] = useState(false);
 
   useEffect(() => {
     // Fetch product data based on the ID
@@ -90,6 +90,20 @@ export default function ProductDetailPage({ params }) {
     }
   };
 
+  /**
+   * Handles adding the product to the cart and shows a notification.
+   */
+  const handleAddToCart = () => {
+    // This is where you would typically add logic to update a global cart state.
+
+    // Show a notification message
+    setShowCartNotification(true);
+    // Hide the notification after 3 seconds
+    setTimeout(() => {
+      setShowCartNotification(false);
+    }, 3000);
+  };
+
   // Show loading state
   if (loading) {
     return (
@@ -127,6 +141,15 @@ export default function ProductDetailPage({ params }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
+
+      {/* Cart Notification Toast */}
+      {showCartNotification && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-fade-in-down">
+          <CheckCircle className="h-5 w-5 text-green-400" />
+          <span>Berhasil ditambahkan ke keranjang</span>
+        </div>
+      )}
+
       <main className="flex-1">
         {/* Breadcrumbs */}
         <div className="py-3 bg-gray-50">
@@ -322,17 +345,20 @@ export default function ProductDetailPage({ params }) {
                       <Button
                         className="sm:flex-1 bg-gray-900 hover:bg-gray-800"
                         size="lg"
+                        onClick={handleAddToCart}
                       >
                         <ShoppingCart className="h-5 w-5 mr-2" />
                         Tambah ke Keranjang
                       </Button>
-                      <Button
-                        variant="secondary"
-                        className="sm:flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900"
-                        size="lg"
-                      >
-                        Beli Sekarang
-                      </Button>
+                      <Link href="/checkout" className="sm:flex-1">
+                        <Button
+                          variant="secondary"
+                          className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900"
+                          size="lg"
+                        >
+                          Beli Sekarang
+                        </Button>
+                      </Link>
                       <Button
                         variant="outline"
                         size="icon"
