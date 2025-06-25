@@ -145,7 +145,7 @@ export default function Navbar() {
               href="/cart"
               className="p-2 rounded-full hover:bg-gray-100 relative"
             >
-              <ShoppingCart className="h-5 w-5" />
+              <ShoppingCart className="h-5 w-5 text-slate-950" />
               <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 3
               </span>
