@@ -385,13 +385,15 @@ export default function Home() {
               Bergabunglah dengan ribuan penggemar alam yang mempercayai Aventis
               untuk kebutuhan perlengkapan mereka.
             </p>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="bg-white border border-gray-400 text-primary hover:text-white hover:bg-black"
-            >
-              Belanja Sekarang <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <Link href={"/products"}>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="bg-white border border-gray-400 text-primary hover:text-white hover:bg-black"
+              >
+                Belanja Sekarang <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
           </div>
         </section>
       </main>

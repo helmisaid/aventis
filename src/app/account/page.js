@@ -120,10 +120,12 @@ export default function AccountPage() {
                 <Separator />
 
                 <div className="p-6">
+                  <Link href="/login">
                   <Button variant="outline" className="border-gray-300 hover:bg-gray-50 w-full gap-2 text-gray-700">
                     <LogOut className="h-4 w-4" />
-                    Keluar
+                    Logout
                   </Button>
+                  </Link>
                 </div>
               </div>
             </div>
